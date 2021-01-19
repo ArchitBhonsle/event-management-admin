@@ -37,7 +37,7 @@ export default function Navbar() {
       alignItems='center'
       justifyContent='space-between'
       py={6}
-      px={{ base: 8, md: '10%', lg: '15%' }}
+      px={{ base: 8, md: '15%' }}
       backgroundColor='green.400'
       color='white'
     >
