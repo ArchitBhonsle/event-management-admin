@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 // ! Remember to put .env in git ignore later
 require('dotenv').config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 4000;
+const dbCollection = process.env.DB_NAME || 'etamax-admin';
 
-mongoose.connect(`mongodb://localhost/${process.env.DB_NAME}`, {
+mongoose.connect(`mongodb://localhost/${dbCollection}`, {
   useNewUrlParser    : true,
   useUnifiedTopology : true,
   useCreateIndex     : true,
