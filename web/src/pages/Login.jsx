@@ -9,9 +9,12 @@ import {
   IconButton
 } from '@chakra-ui/react';
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+// import { useHistory } from 'react-router-dom';
+
 import Layout from '../components/Layout';
 
 import { createHandleChange } from '../utils/createHandleChange';
+import easyFetch from '../utils/easyFetch';
 
 export default function Login() {
   const [ passShow, setPassShow ] = useState(false);
@@ -23,9 +26,18 @@ export default function Login() {
 
   const handleChange = createHandleChange(setFields);
 
-  function handleSubmit() {
-    console.log(fields);
-  }
+  // const history = useHistory();
+
+  const handleSubmit = async () => {
+    const response = await easyFetch('login', fields);
+    const { data, error } = response;
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(data);
+      // history.push('/dashboard');
+    }
+  };
 
   return (
     <Layout>

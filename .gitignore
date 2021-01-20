@@ -1,6 +1,7 @@
 ## SERVER
 
 server/node_modules
+server/.env
 
 ## WEB
 

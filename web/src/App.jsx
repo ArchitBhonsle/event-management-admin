@@ -9,7 +9,7 @@ function App() {
         <Login />
       </Route>
       <Route path='/'>
-        <Layout>Hello World</Layout>
+        <Layout>Hello</Layout>
       </Route>
     </Switch>
   );

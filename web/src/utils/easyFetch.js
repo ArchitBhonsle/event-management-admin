@@ -1,6 +1,6 @@
-export default async function easyFetch(url, data, method = 'POST') {
+export default async function easyFetch(path, data = {}, method = 'POST') {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`http://localhost:4000/admin/${path}`, {
       headers     : {
         'Content-Type' : 'application/json'
       },
@@ -8,16 +8,14 @@ export default async function easyFetch(url, data, method = 'POST') {
       method,
       body        : JSON.stringify(data)
     });
-    const fetchedData = response.json();
+    const fetchedData = await response.json();
 
-    return {
-      data  : fetchedData,
-      error : null
-    };
+    return fetchedData;
   } catch (error) {
     return {
-      data  : null,
-      error
+      data    : null,
+      error,
+      message : null
     };
   }
 }

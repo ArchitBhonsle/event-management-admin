@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Button, Flex, Heading, Stack, Box } from '@chakra-ui/react';
 import { MdClose, MdMenu } from 'react-icons/md';
+import easyFetch from '../utils/easyFetch';
 
 function NavButton({ children, link, func }) {
   const history = useHistory();
@@ -28,6 +29,11 @@ function NavButton({ children, link, func }) {
 export default function Navbar() {
   const [ isOpen, setIsOpen ] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+
+  const logout = async () => {
+    const response = await easyFetch('logout');
+    console.log(response);
+  };
 
   return (
     <Flex
@@ -58,7 +64,7 @@ export default function Navbar() {
           <NavButton link='/dashboard'>dashboard</NavButton>
           <NavButton link='/users'>users</NavButton>
           <NavButton link='/events'>events</NavButton>
-          <NavButton func={() => console.log('log out')}>log out</NavButton>
+          <NavButton func={logout}>log out</NavButton>
         </Stack>
       </Box>
     </Flex>
