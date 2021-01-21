@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Button,
   Input,
-  Text,
   VStack,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
   InputGroup,
   InputRightElement,
   IconButton
 } from '@chakra-ui/react';
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
-// import { useHistory } from 'react-router-dom';
 
 import Layout from '../components/Layout';
 
@@ -23,38 +25,47 @@ export default function Login() {
     username : '',
     password : ''
   });
+  const [ errors, setErrors ] = useState({
+    username : null,
+    password : null
+  });
 
-  const handleChange = createHandleChange(setFields);
+  const handleChange = createHandleChange(setFields, setErrors);
 
-  // const history = useHistory();
+  const history = useHistory();
 
   const handleSubmit = async () => {
     const response = await easyFetch('login', fields);
     const { data, error } = response;
     if (error) {
-      console.log(error);
+      error.map(({ field, message }) =>
+        setErrors({ ...errors, [field]: message })
+      );
     } else {
       console.log(data);
-      // history.push('/dashboard');
+      history.push('/dashboard');
     }
   };
 
   return (
     <Layout>
       <VStack w='400px' maxW='100%' mx='auto' spacing={4}>
-        <VStack w='100%' spacing={1}>
-          <Text alignSelf='flex-start'>Username</Text>
+        <FormControl isInvalid={errors.username}>
+          <FormLabel htmlFor='username'>username</FormLabel>
           <Input
+            id='username'
             name='username'
             placeholder='username'
             value={fields.username}
             onChange={handleChange}
           />
-        </VStack>
-        <VStack w='100%' spacing={1}>
-          <Text alignSelf='flex-start'>Password</Text>
+          <FormErrorMessage>{errors.username}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={errors.password}>
+          <FormLabel htmlFor='password'>password</FormLabel>
           <InputGroup size='md'>
             <Input
+              id='password'
               name='password'
               type={passShow ? 'text' : 'password'}
               placeholder='password'
@@ -71,7 +82,8 @@ export default function Login() {
               />
             </InputRightElement>
           </InputGroup>
-        </VStack>
+          <FormErrorMessage>{errors.password}</FormErrorMessage>
+        </FormControl>
         <Button colorScheme='green' alignSelf='flex-end' onClick={handleSubmit}>
           Log In
         </Button>

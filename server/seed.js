@@ -1,21 +1,21 @@
+const argon2 = require('argon2');
 const { Admin } = require('./models/admin');
 
-function addAdmin() {
-  Admin.findOne({ username: 'hello', password: 'there' }, (err, doc) => {
+async function addAdmin() {
+  try {
+    const doc = await Admin.findOne({ username: 'hello' }).exec();
     if (doc === null) {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log('adding admin');
+      console.log('Adding dummy user');
       const newAdmin = new Admin({
-        username: 'hello',
-        password: 'there',
-        name: 'hello there'
+        username : 'hello',
+        password : await argon2.hash('there'),
+        name     : 'hello there'
       });
-      newAdmin.save();
+      await newAdmin.save();
     }
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 addAdmin();
