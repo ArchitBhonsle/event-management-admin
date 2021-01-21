@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
+  Box,
   Button,
-  Input,
-  VStack,
   FormControl,
-  FormLabel,
   FormErrorMessage,
+  FormLabel,
+  Heading,
+  IconButton,
+  Input,
   InputGroup,
   InputRightElement,
-  IconButton
+  VStack
 } from '@chakra-ui/react';
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
-
-import Layout from '../components/Layout';
 
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
@@ -48,8 +48,11 @@ export default function Login() {
   };
 
   return (
-    <Layout>
+    <Box w='100%' px={{ base: 8, md: '15%' }} py={8}>
       <VStack w='400px' maxW='100%' mx='auto' spacing={4}>
+        <Heading size='xl' py={6} color='green.500'>
+          login
+        </Heading>
         <FormControl isInvalid={errors.username}>
           <FormLabel htmlFor='username'>username</FormLabel>
           <Input
@@ -88,6 +91,6 @@ export default function Login() {
           Log In
         </Button>
       </VStack>
-    </Layout>
+    </Box>
   );
 }

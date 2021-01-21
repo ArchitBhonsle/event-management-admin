@@ -28,11 +28,11 @@ router.post('/login', async (req, res) => {
       });
     }
     req.session.username = doc.username;
-    req.session.save();
     res.send({
       data  : { user: { username: doc.username, name: doc.name } },
       error : null
     });
+    req.session.save((err) => console.error({ err }));
   } catch (error) {
     console.error(error);
   }
@@ -49,8 +49,8 @@ router.post('/logout', isAuth, (req, res) => {
   });
 });
 
-router.get('/', isAuth, async (req, res) => {
-  const username = req.session.user;
+router.get('/me', isAuth, async (req, res) => {
+  const username = req.session.username;
   try {
     const user = await Admin.findOne({ username });
     if (user === null) {

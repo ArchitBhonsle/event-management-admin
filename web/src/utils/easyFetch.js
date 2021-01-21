@@ -6,7 +6,7 @@ export default async function easyFetch(path, data = {}, method = 'POST') {
       },
       credentials : 'include',
       method,
-      body        : JSON.stringify(data)
+      body        : method !== 'GET' ? JSON.stringify(data) : null
     });
     const fetchedData = await response.json();
 

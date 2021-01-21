@@ -44,7 +44,7 @@ export default function Navbar() {
       justifyContent='space-between'
       py={6}
       px={{ base: 8, md: '15%' }}
-      backgroundColor='green.400'
+      backgroundColor='green.500'
       color='white'
     >
       <Heading fontSize='4xl'>η</Heading>
