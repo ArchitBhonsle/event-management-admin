@@ -7,7 +7,7 @@ const MongoStore = require('connect-mongo')(session);
 require('dotenv').config();
 
 // Route imports
-const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
 
 // Constants
 const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
@@ -49,7 +49,7 @@ app.use(express.json());
 
 require('./seed');
 
-app.use('/admin', adminRoutes);
+app.use('/auth', authRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Up at http://localhost:${port}`);

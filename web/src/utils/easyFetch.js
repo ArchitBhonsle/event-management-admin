@@ -1,6 +1,6 @@
 export default async function easyFetch(path, data = {}, method = 'POST') {
   try {
-    const response = await fetch(`http://localhost:4000/admin/${path}`, {
+    const response = await fetch(`http://localhost:4000/${path}`, {
       headers     : {
         'Content-Type' : 'application/json'
       },

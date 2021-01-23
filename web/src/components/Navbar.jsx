@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { Button, Flex, Heading, Stack, Box } from '@chakra-ui/react';
-import { MdClose, MdMenu } from 'react-icons/md';
-import easyFetch from '../utils/easyFetch';
+import { useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import { Button, Flex, Heading, Stack, Box } from "@chakra-ui/react";
+import { MdClose, MdMenu } from "react-icons/md";
+import easyFetch from "../utils/easyFetch";
+import useUser from "../utils/useUser";
 
 function NavButton({ children, link, func }) {
   const history = useHistory();
@@ -11,11 +12,11 @@ function NavButton({ children, link, func }) {
 
   return (
     <Button
-      colorScheme={`${active ? 'green' : 'black'}`}
+      colorScheme={`${active ? "green" : "black"}`}
       variant='link'
       fontSize='lg'
       p={3}
-      bg={`${active && 'white'}`}
+      bg={`${active && "white"}`}
       onClick={async () => {
         if (func) await func();
         if (link) history.push(link);
@@ -27,12 +28,20 @@ function NavButton({ children, link, func }) {
 }
 
 export default function Navbar() {
-  const [ isOpen, setIsOpen ] = useState(false);
+  const history = useHistory();
+  const { mutateUser } = useUser();
+
+  const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
   const logout = async () => {
-    const response = await easyFetch('logout');
-    console.log(response);
+    const response = await easyFetch("auth/logout");
+    if (response) {
+      await mutateUser(null, false);
+      history.push("/login");
+    } else {
+      console.log("logout failed");
+    }
   };
 
   return (
@@ -43,23 +52,23 @@ export default function Navbar() {
       alignItems='center'
       justifyContent='space-between'
       py={6}
-      px={{ base: 8, md: '15%' }}
+      px={{ base: 8, md: "15%" }}
       backgroundColor='green.500'
       color='white'
     >
       <Heading fontSize='4xl'>η</Heading>
-      <Box display={{ base: 'block', md: 'none' }} onClick={toggle}>
-        {isOpen ? <MdClose size={'2rem'} /> : <MdMenu size={'2rem'} />}
+      <Box display={{ base: "block", md: "none" }} onClick={toggle}>
+        {isOpen ? <MdClose size={"2rem"} /> : <MdMenu size={"2rem"} />}
       </Box>
       <Box
-        display={{ base: isOpen ? 'block' : 'none', md: 'block' }}
-        flexBasis={{ base: '100%', md: 'auto' }}
+        display={{ base: isOpen ? "block" : "none", md: "block" }}
+        flexBasis={{ base: "100%", md: "auto" }}
         pt={{ base: 4, md: 0 }}
       >
         <Stack
           spacing={2}
-          direction={{ base: 'column', md: 'row' }}
-          justify={[ 'center', 'space-between', 'flex-end', 'flex-end' ]}
+          direction={{ base: "column", md: "row" }}
+          justify={["center", "space-between", "flex-end", "flex-end"]}
         >
           <NavButton link='/dashboard'>dashboard</NavButton>
           <NavButton link='/users'>users</NavButton>
