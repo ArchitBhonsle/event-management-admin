@@ -1,14 +1,14 @@
 import { Redirect, Route } from "react-router-dom";
-import useUser from "../utils/useUser";
+import useAuth from "../hooks/useAuth";
 
 export default function AuthRoute({ component: Component, rest }) {
-  const { user } = useUser();
+  const { loggedOut } = useAuth();
 
   return (
     <Route
       {...rest}
       render={(props) =>
-        user ? <Component {...props} /> : <Redirect to='/login' />
+        !loggedOut ? <Component {...props} /> : <Redirect to='/login' />
       }
     />
   );

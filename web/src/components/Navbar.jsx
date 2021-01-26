@@ -3,7 +3,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { Button, Flex, Heading, Stack, Box } from "@chakra-ui/react";
 import { MdClose, MdMenu } from "react-icons/md";
 import easyFetch from "../utils/easyFetch";
-import useUser from "../utils/useUser";
+import useAuth from "../hooks/useAuth";
 
 function NavButton({ children, link, func }) {
   const history = useHistory();
@@ -29,7 +29,7 @@ function NavButton({ children, link, func }) {
 
 export default function Navbar() {
   const history = useHistory();
-  const { mutateUser } = useUser();
+  const { userMutate } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -37,7 +37,7 @@ export default function Navbar() {
   const logout = async () => {
     const response = await easyFetch("auth/logout");
     if (response) {
-      await mutateUser(null, false);
+      await userMutate(null, false);
       history.push("/login");
     } else {
       console.log("logout failed");

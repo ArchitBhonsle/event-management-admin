@@ -16,12 +16,12 @@ import {
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 import { createHandleChange } from "../utils/createHandleChange";
-import useUser from "../utils/useUser";
 import easyFetch from "../utils/easyFetch";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
   const history = useHistory();
-  const { user, mutateUser } = useUser();
+  const { user, userMutate } = useAuth();
   const [passShow, setPassShow] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Login() {
         setErrors({ ...errors, [field]: message })
       );
     } else {
-      await mutateUser(data, false);
+      await userMutate(data, false);
       history.push("/dashboard");
     }
   };

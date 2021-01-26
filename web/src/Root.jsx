@@ -1,17 +1,21 @@
-import { BrowserRouter } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react';
-import { SWRConfig } from 'swr';
+import { BrowserRouter } from "react-router-dom";
+import { ChakraProvider } from "@chakra-ui/react";
+import { SWRConfig } from "swr";
 
-import fetcher from './utils/fetcher';
+import fetcher from "./utils/fetcher";
 
-import App from './App';
+import App from "./App";
+import AuthProvider from "./contexts/AuthContext";
+import UserLoader from "./components/UserLoader";
 
 export default function Root() {
   return (
     <BrowserRouter>
       <ChakraProvider>
         <SWRConfig value={{ fetcher, revalidateOnFocus: false }}>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </SWRConfig>
       </ChakraProvider>
     </BrowserRouter>
