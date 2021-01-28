@@ -5,6 +5,8 @@ server/.env
 
 ## WEB
 
+web/.eslintcache
+
 # dependencies
 web/node_modules
 web/.pnp
