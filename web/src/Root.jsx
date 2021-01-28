@@ -6,7 +6,6 @@ import fetcher from "./utils/fetcher";
 
 import App from "./App";
 import AuthProvider from "./contexts/AuthContext";
-import UserLoader from "./components/UserLoader";
 
 export default function Root() {
   return (

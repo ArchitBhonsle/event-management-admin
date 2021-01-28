@@ -21,14 +21,14 @@ import useAuth from "../hooks/useAuth";
 
 export default function Login() {
   const history = useHistory();
-  const { user, userMutate } = useAuth();
+  const { userData, userMutate } = useAuth();
   const [passShow, setPassShow] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (userData) {
       history.push("/dashboard");
     }
-  }, [user, history]);
+  }, [userData, history]);
 
   const [fields, setFields] = useState({
     username: "",
