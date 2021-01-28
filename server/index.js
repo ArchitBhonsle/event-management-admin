@@ -8,6 +8,7 @@ require("dotenv").config();
 
 // Route imports
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
 
 // Constants
 const clientURL = process.env.CLIENT_URL || "http://localhost:3000",
@@ -51,6 +52,7 @@ app.use(express.json());
 require("./seed");
 
 app.use("/auth", authRoutes);
+app.use("/users/", userRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Up at http://localhost:${port}`);

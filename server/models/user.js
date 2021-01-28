@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   rollno: {
-    type: Number,
+    type: String,
     required: true,
     unique: true,
     trim: true,

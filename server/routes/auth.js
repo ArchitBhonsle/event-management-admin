@@ -5,9 +5,6 @@ const argon2 = require("argon2");
 const { Admin } = require("../models/admin");
 const isAuth = require("../middleware/isAuth");
 
-const User = require("../models/user");
-const users = require("../middleware/users");
-
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -68,12 +65,6 @@ router.get("/me", isAuth, async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-});
-
-router.get("/user/:roll", (req, res) => {
-  users(req.params.roll, (err, docs) => {
-    res.send(docs);
-  });
 });
 
 module.exports = router;
