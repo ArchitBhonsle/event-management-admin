@@ -4,9 +4,7 @@ import useSWR from "swr";
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const { data, error, mutate, revalidate } = useSWR(
-    "http://localhost:4000/auth/me"
-  );
+  const { data, error, mutate, revalidate } = useSWR("auth/me");
 
   const [value, setValue] = useState({
     loading: !data && !error,

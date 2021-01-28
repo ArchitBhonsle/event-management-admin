@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import AuthRoute from "./components/AuthRoute";
@@ -7,14 +6,9 @@ import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
 import Users from "./pages/Users";
 
-import useAuth from "./hooks/useAuth";
 import UserLoader from "./components/UserLoader";
 
 function App() {
-  const userInfo = useAuth();
-
-  useEffect(() => console.log("userInfo", userInfo), [userInfo]);
-
   return (
     <UserLoader>
       <Switch>
