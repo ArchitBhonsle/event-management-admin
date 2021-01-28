@@ -6,15 +6,17 @@ const Users = require("../models/user");
 const userQueries = require("../middleware/userQueries");
 
 router.get("/", (req, res) => {
-  const search = req.query.rollno;
+  const rollno = req.query.rollno;
   const page = req.query.page;
+  const pageLimit = 10;
 
-  userQueries.getUserFromRollNo(search, (err, docs) => {
+  userQueries.getUserFromRollNo(rollno, (err, docs) => {
     if(!err)
       res.send(docs);
     else
       throw err;
-  });
+  }).limit(pageLimit)
+    .skip((page - 1) * pageLimit);
 });
 
 module.exports = router;
