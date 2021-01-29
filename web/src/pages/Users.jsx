@@ -6,60 +6,19 @@ import Layout from '../components/Layout';
 import PageControls from '../components/PageControls';
 import UserCard from '../components/UserCard';
 import createGetUri from '../utils/createGetUri';
+import easyFetch from '../utils/easyFetch';
 
-const users = [
-  {
-    rollNo: '100000',
-    dept: 'COMPS',
-    criteria: [true, true, true],
-    moneyOwed: 200,
-    isPaid: false,
-    name: 'Abcd Efgh',
-  },
-  {
-    rollNo: '200000',
-    dept: 'ELEC',
-    criteria: [false, false, true],
-    moneyOwed: 200,
-    isPaid: true,
-    name: 'Abcd Efgh',
-  },
-  {
-    rollNo: '300000',
-    dept: 'EXTC',
-    criteria: [true, true, true],
-    moneyOwed: 200,
-    isPaid: false,
-    name: 'Abcd Efgh',
-  },
-  {
-    rollNo: '400000',
-    dept: 'MECH',
-    criteria: [false, false, true],
-    moneyOwed: 200,
-    isPaid: true,
-    name: 'Abcd Efgh',
-  },
-  {
-    rollNo: '500000',
-    dept: 'IT',
-    criteria: [false, false, true],
-    moneyOwed: 200,
-    isPaid: false,
-    name: 'Abcd Efgh',
-  },
-];
-
-function fetchUsers(searchText = '', page = 1) {
+async function fetchUsers(searchText = '', page = 1) {
   const params = [['page', page]];
   if (searchText) params.push(['search', searchText]);
   const uri = createGetUri('users', params);
-  console.log('getUsers uri: ', uri);
+  console.log(await easyFetch(uri, {}, 'GET'));
 }
 
 export default function Users() {
   const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(1);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => fetchUsers(), []);
 

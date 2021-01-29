@@ -1,16 +1,16 @@
-const argon2 = require("argon2");
-const { Admin } = require("./models/admin");
-const User = require("./models/user");
+const argon2 = require('argon2');
+const { Admin } = require('./models/admin');
+const User = require('./models/user');
 
 async function addAdmin() {
   try {
-    const doc = await Admin.findOne({ username: "hello" }).exec();
+    const doc = await Admin.findOne({ username: 'hello' }).exec();
     if (doc === null) {
-      console.log("Adding dummy user");
+      console.log('Adding dummy user');
       const newAdmin = new Admin({
-        username: "hello",
-        password: await argon2.hash("generalk123"),
-        name: "hello there",
+        username: 'hello',
+        password: await argon2.hash('generalk123'),
+        name: 'hello there',
       });
       await newAdmin.save();
     }
@@ -21,21 +21,25 @@ async function addAdmin() {
 
 async function addUsers() {
   try {
-    const doc = await User.findOne({ rollno: "501810" }).exec();
-    if (doc === null) {
-      console.log("Adding dummy users");
-      var roll = 501810;
-      for(i=0;i<10;i++)
-      {
-        const newUser = new User({
-          email: "abc"+i+"@gmail.com",
-          rollno: roll++,
-          password: "abdsafc",
-          events: [],
-          tokens: [],
-        });
-        await newUser.save();
+    const docNum = await User.countDocuments({});
+    if (docNum !== 5 * 60) {
+      User.remove({});
+      for (let dep = 1; dep <= 5; ++dep) {
+        for (let num = 1; num <= 60; ++num) {
+          let rollNum = dep * 100000 + 1800 + num;
+          rollNum = rollNum.toString();
+          const newUser = new User({
+            name: 'Hello There',
+            email: `${rollNum}@gmail.com`,
+            rollno: rollNum,
+            password: rollNum,
+            events: [],
+            tokens: [],
+          });
+          await newUser.save();
+        }
       }
+      console.log('Added dummy users');
     }
   } catch (error) {
     console.error(error);
