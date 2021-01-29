@@ -1,4 +1,12 @@
-import { Grid, Input, VStack, HStack, Button } from '@chakra-ui/react';
+import {
+  Grid,
+  Input,
+  VStack,
+  HStack,
+  Button,
+  useBreakpointValue,
+  IconButton,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { MdSearch } from 'react-icons/md';
 
@@ -20,6 +28,7 @@ export default function Users() {
   const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState([]);
+  const bigSearch = useBreakpointValue({ base: false, md: true });
 
   useEffect(() => {
     (async function () {
@@ -27,8 +36,6 @@ export default function Users() {
       setUsers(fetchedUsers);
     })();
   }, []);
-
-  useEffect(() => console.log(users), [users]);
 
   async function changePage(newPage) {
     setPage(newPage);
@@ -54,17 +61,29 @@ export default function Users() {
               }
             }}
           />
-          <Button
-            colorScheme='green'
-            size='lg'
-            rightIcon={<MdSearch fontSize='1.5rem' />}
-            onClick={async () => {
-              const fetchedUsers = await fetchUsers(searchText, page);
-              setUsers(fetchedUsers);
-            }}
-          >
-            Search
-          </Button>
+          {bigSearch ? (
+            <Button
+              colorScheme='green'
+              size='lg'
+              rightIcon={<MdSearch fontSize='1.5rem' />}
+              onClick={async () => {
+                const fetchedUsers = await fetchUsers(searchText, page);
+                setUsers(fetchedUsers);
+              }}
+            >
+              Search
+            </Button>
+          ) : (
+            <IconButton
+              colorScheme='green'
+              size='lg'
+              icon={<MdSearch fontSize='1.5rem' />}
+              onClick={async () => {
+                const fetchedUsers = await fetchUsers(searchText, page);
+                setUsers(fetchedUsers);
+              }}
+            ></IconButton>
+          )}
         </HStack>
         <Grid
           gridTemplateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
