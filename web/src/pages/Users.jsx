@@ -54,7 +54,7 @@ function fetchUsers(searchText = '', page = 1) {
   const params = [['page', page]];
   if (searchText) params.push(['search', searchText]);
   const uri = createGetUri('users', params);
-  console.log('fetch users uri: ', uri);
+  console.log('getUsers uri: ', uri);
 }
 
 export default function Users() {
@@ -92,7 +92,11 @@ export default function Users() {
             Search
           </Button>
         </HStack>
-        <Grid gridTemplateColumns="repeat(2, 1fr)" gap={4} w="100%">
+        <Grid
+          gridTemplateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
+          gap={4}
+          w="100%"
+        >
           {users.map(opts => (
             <UserCard key={opts.rollNo} {...opts} />
           ))}
