@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
       }
     },
   },
-  rollno: {
+  rollNo: {
     type: String,
     required: true,
     unique: true,
@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
         throw new Error('Rollno is not valid');
       }
     },
+  },
+  department: {
+    type: String,
+    required: true,
   },
   password: {
     type: String,

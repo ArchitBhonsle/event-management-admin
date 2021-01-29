@@ -20,6 +20,14 @@ async function addAdmin() {
 }
 
 async function addUsers() {
+  const deptMap = {
+    '1': 'COMPS',
+    '2': 'EXTC',
+    '3': 'ELEC',
+    '4': 'MECH',
+    '5': 'IT',
+  };
+
   try {
     const docNum = await User.countDocuments({});
     if (docNum !== 5 * 60) {
@@ -31,7 +39,8 @@ async function addUsers() {
           const newUser = new User({
             name: 'Hello There',
             email: `${rollNum}@gmail.com`,
-            rollno: rollNum,
+            rollNo: rollNum,
+            department: deptMap[rollNum[0]],
             password: rollNum,
             events: [],
             tokens: [],

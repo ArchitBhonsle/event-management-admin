@@ -6,24 +6,19 @@ import {
   Tag,
   Text,
   VStack,
-} from "@chakra-ui/react";
-import { MdCheck, MdClose, MdArrowForward } from "react-icons/md";
+} from '@chakra-ui/react';
+import { MdCheck, MdClose, MdArrowForward } from 'react-icons/md';
 
 const tagMap = {
-  COMPS: "blue",
-  ELEC: "purple",
-  MECH: "pink",
-  EXTC: "yellow",
-  IT: "red",
+  COMPS: 'blue',
+  ELEC: 'purple',
+  MECH: 'pink',
+  EXTC: 'yellow',
+  IT: 'red',
 };
 
 export default function UserCard({
-  rollNo,
-  dept,
-  criteria,
-  moneyOwed,
-  isPaid,
-  name,
+  user: { rollNo, department, criteria, moneyOwed, name },
 }) {
   return (
     <Grid
@@ -38,7 +33,7 @@ export default function UserCard({
     >
       <HStack>
         <Heading size='lg'>{rollNo}</Heading>
-        {criteria.every((v) => v === true) ? (
+        {Object.values(criteria).every(v => v === true) ? (
           <MdCheck size='1.5rem' />
         ) : (
           <MdClose size='1.5rem' />
@@ -52,17 +47,13 @@ export default function UserCard({
         gridRowEnd={3}
       >
         <IconButton aria-label='events' icon={<MdArrowForward />} />
-        <Text
-          fontSize='xl'
-          variant='outline'
-          textDecoration={`${isPaid ? "line-through" : "none"}`}
-        >
+        <Text fontSize='xl' variant='outline'>
           ₹{moneyOwed}
         </Text>
       </VStack>
       <HStack>
-        <Tag colorScheme={tagMap[dept]} fontSize='xs'>
-          {dept}
+        <Tag colorScheme={tagMap[department]} fontSize='xs'>
+          {department}
         </Tag>
         <Text>{name}</Text>
       </HStack>

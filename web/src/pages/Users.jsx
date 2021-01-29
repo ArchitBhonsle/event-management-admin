@@ -12,7 +12,8 @@ async function fetchUsers(searchText = '', page = 1) {
   const params = [['page', page]];
   if (searchText) params.push(['search', searchText]);
   const uri = createGetUri('users', params);
-  console.log(await easyFetch(uri, {}, 'GET'));
+  console.log(uri);
+  return await easyFetch(uri, {}, 'GET');
 }
 
 export default function Users() {
@@ -20,33 +21,47 @@ export default function Users() {
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState([]);
 
-  useEffect(() => fetchUsers(), []);
+  useEffect(() => {
+    (async function () {
+      const fetchedUsers = await fetchUsers();
+      setUsers(fetchedUsers);
+    })();
+  }, []);
 
-  function changePage(newPage) {
+  useEffect(() => console.log(users), [users]);
+
+  async function changePage(newPage) {
     setPage(newPage);
-    fetchUsers(searchText, newPage);
+    const fetchedUsers = await fetchUsers(searchText, newPage);
+    setUsers(fetchedUsers);
   }
 
   return (
     <Layout>
       <VStack spacing={4}>
-        <HStack w="100%">
+        <HStack w='100%'>
           <Input
-            type="text"
-            placeholder="Roll Number or Email"
-            size="lg"
-            colorScheme="green"
+            type='text'
+            placeholder='Roll Number or Email'
+            size='lg'
+            colorScheme='green'
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter') fetchUsers(searchText, page);
+            onKeyDown={async e => {
+              if (e.key === 'Enter') {
+                const fetchedUsers = await fetchUsers(searchText, page);
+                setUsers(fetchedUsers);
+              }
             }}
           />
           <Button
-            colorScheme="green"
-            size="lg"
-            rightIcon={<MdSearch fontSize="1.5rem" />}
-            onClick={() => fetchUsers(searchText, page)}
+            colorScheme='green'
+            size='lg'
+            rightIcon={<MdSearch fontSize='1.5rem' />}
+            onClick={async () => {
+              const fetchedUsers = await fetchUsers(searchText, page);
+              setUsers(fetchedUsers);
+            }}
           >
             Search
           </Button>
@@ -54,10 +69,10 @@ export default function Users() {
         <Grid
           gridTemplateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
           gap={4}
-          w="100%"
+          w='100%'
         >
-          {users.map(opts => (
-            <UserCard key={opts.rollNo} {...opts} />
+          {users.map(user => (
+            <UserCard key={user.rollNo} user={user} />
           ))}
         </Grid>
         <PageControls page={page} changePage={changePage} max={30} />
