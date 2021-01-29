@@ -31,7 +31,6 @@ async function addUsers() {
           email: "abc"+i+"@gmail.com",
           rollno: roll++,
           password: "abdsafc",
-          moneyOwed: false,
           events: [],
           tokens: [],
         });

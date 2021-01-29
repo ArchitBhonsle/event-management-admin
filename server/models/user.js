@@ -39,17 +39,15 @@ const userSchema = new mongoose.Schema({
     crit3: { type: Boolean, default: false },
   },
   moneyOwed: {
-    type: Boolean,
+    type: Number,
+    default: 0,
+    trim: true,
   },
   events: [
     {
       type: String,
     },
   ],
-  isPaid: {
-    type: Boolean,
-    default: false,
-  },
   tokens: [
     {
       token: {
