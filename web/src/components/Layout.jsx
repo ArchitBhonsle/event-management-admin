@@ -6,7 +6,7 @@ export default function Layout({ children }) {
   return (
     <Fragment>
       <Navbar />
-      <Box w='100%' px={{ base: 8, md: '15%' }} py={8}>
+      <Box w='100%' px={{ base: 8, md: '15%' }} py={4}>
         {children}
       </Box>
     </Fragment>

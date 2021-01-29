@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Button, Flex, Heading, Stack, Box } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Heading,
+  Stack,
+  Box,
+  useColorMode,
+} from '@chakra-ui/react';
 import { MdClose, MdMenu } from 'react-icons/md';
 import easyFetch from '../utils/easyFetch';
 import useAuth from '../hooks/useAuth';
@@ -12,11 +19,10 @@ function NavButton({ children, link, func }) {
 
   return (
     <Button
-      colorScheme={`${active ? 'green' : 'black'}`}
-      variant='link'
+      variant='ghost'
       fontSize='lg'
       p={3}
-      bg={`${active && 'white'}`}
+      colorScheme={`${active ? 'green' : 'white'}`}
       onClick={async () => {
         if (func) await func();
         if (link) history.push(link);
@@ -33,6 +39,8 @@ export default function Navbar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+
+  const { toggleColorMode } = useColorMode();
 
   const logout = async () => {
     const response = await easyFetch('auth/logout');
@@ -53,10 +61,15 @@ export default function Navbar() {
       justifyContent='space-between'
       py={6}
       px={{ base: 8, md: '15%' }}
-      backgroundColor='green.500'
-      color='white'
     >
-      <Heading fontSize='4xl'>η</Heading>
+      <Heading
+        as='button'
+        fontSize='4xl'
+        colorScheme='green'
+        onDoubleClick={toggleColorMode}
+      >
+        η
+      </Heading>
       <Box display={{ base: 'block', md: 'none' }} onClick={toggle}>
         {isOpen ? <MdClose size={'2rem'} /> : <MdMenu size={'2rem'} />}
       </Box>

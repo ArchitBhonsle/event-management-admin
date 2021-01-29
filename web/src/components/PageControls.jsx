@@ -24,13 +24,13 @@ export default function PageControls({ page, changePage, max }) {
         icon={<MdFirstPage />}
         onClick={() => changePage(1)}
         isDisabled={page === 1}
-      ></IconButton>
+      />
       <IconButton
         aria-label='go to previous page'
         icon={<MdNavigateBefore />}
         onClick={() => changePage(Math.max(1, page - 1))}
         isDisabled={page === 1}
-      ></IconButton>
+      />
       {getInclusiveRange(...getPageRange(page, max)).map(num => (
         <Button
           key={num}
@@ -47,13 +47,13 @@ export default function PageControls({ page, changePage, max }) {
         icon={<MdNavigateNext />}
         onClick={() => changePage(Math.min(page + 1, max))}
         isDisabled={page === max}
-      ></IconButton>
+      />
       <IconButton
         aria-label='go to last page'
         icon={<MdLastPage />}
         onClick={() => changePage(max)}
         isDisabled={page === max}
-      ></IconButton>
+      />
     </HStack>
   );
 }

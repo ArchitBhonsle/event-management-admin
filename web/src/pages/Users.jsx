@@ -20,7 +20,6 @@ async function fetchUsers(searchText = '', page = 1) {
   const params = [['page', page]];
   if (searchText) params.push(['search', searchText]);
   const uri = createGetUri('users', params);
-  console.log(uri);
   return await easyFetch(uri, {}, 'GET');
 }
 
@@ -45,7 +44,7 @@ export default function Users() {
 
   return (
     <Layout>
-      <VStack spacing={4}>
+      <VStack spacing={6}>
         <HStack w='100%'>
           <Input
             type='text'
