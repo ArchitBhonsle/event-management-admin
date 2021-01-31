@@ -1,11 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const argon2 = require("argon2");
+const argon2 = require('argon2');
 
-const { Admin } = require("../models/admin");
-const isAuth = require("../middleware/isAuth");
+const Admin = require('../models/admin');
+const isAuth = require('../middleware/isAuth');
 
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -13,14 +13,14 @@ router.post("/login", async (req, res) => {
     if (doc === null) {
       res.send({
         data: null,
-        error: [{ field: "username", message: "user doesn't exist" }],
+        error: [{ field: 'username', message: "user doesn't exist" }],
       });
       return;
     }
     if (!(await argon2.verify(doc.password, password))) {
       res.send({
         data: null,
-        error: [{ field: "password", message: "incorrect password" }],
+        error: [{ field: 'password', message: 'incorrect password' }],
       });
     }
     req.session.username = doc.username;
@@ -28,7 +28,7 @@ router.post("/login", async (req, res) => {
       data: { username: doc.username, name: doc.name },
       error: null,
     });
-    req.session.save((err) => {
+    req.session.save(err => {
       if (err) console.error({ err });
     });
   } catch (error) {
@@ -36,18 +36,18 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/logout", isAuth, (req, res) => {
-  req.session.destroy((err) => {
+router.post('/logout', isAuth, (req, res) => {
+  req.session.destroy(err => {
     if (err) {
       console.log(err);
-      res.send({ data: null, error: "unknown error occurred" });
+      res.send({ data: null, error: 'unknown error occurred' });
     } else {
       res.send({ data: true, error: null });
     }
   });
 });
 
-router.get("/me", isAuth, async (req, res) => {
+router.get('/me', isAuth, async (req, res) => {
   const username = req.session.username;
   try {
     const user = await Admin.findOne({ username });

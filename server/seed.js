@@ -1,7 +1,7 @@
 const argon2 = require('argon2');
 const faker = require('faker');
 
-const { Admin } = require('./models/admin');
+const Admin = require('./models/admin');
 const User = require('./models/user');
 
 async function addAdmin() {
