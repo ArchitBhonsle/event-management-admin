@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
     trim: true,
   },
-  events: [[{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }]],
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
   tokens: [
     {
       token: {
