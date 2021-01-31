@@ -1,4 +1,6 @@
 const argon2 = require('argon2');
+const faker = require('faker');
+
 const { Admin } = require('./models/admin');
 const User = require('./models/user');
 
@@ -37,8 +39,8 @@ async function addUsers() {
           let rollNum = dep * 100000 + 1800 + num;
           rollNum = rollNum.toString();
           const newUser = new User({
-            name: 'Hello There',
-            email: `${rollNum}@gmail.com`,
+            name: faker.name.findName(),
+            email: faker.internet.email(),
             rollNo: rollNum,
             department: deptMap[rollNum[0]],
             password: rollNum,
