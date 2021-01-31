@@ -85,7 +85,11 @@ export default function Users() {
           )}
         </HStack>
         <Grid
-          gridTemplateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
+          gridTemplateColumns={{
+            base: '1fr',
+            md: 'repeat(2, 1fr)',
+            xl: 'repeat(3, 1fr)',
+          }}
           gap={4}
           w='100%'
         >
