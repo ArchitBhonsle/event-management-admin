@@ -43,8 +43,8 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
           <ModalCloseButton />
           <ModalBody>Hello</ModalBody>
           <ModalFooter>
-            <HStack>
-              <Button colorScheme='red' mr={3} onClick={alertOnOpen}>
+            <HStack spacing={2}>
+              <Button colorScheme='red' onClick={alertOnOpen}>
                 Delete
               </Button>
               <Button
@@ -59,12 +59,16 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <DeleteConfirmation isOpen={alertIsOpen} onClose={alertOnClose} />
+      <DeleteConfirmation
+        rollNo={rollNo}
+        isOpen={alertIsOpen}
+        onClose={alertOnClose}
+      />
     </>
   );
 }
 
-function DeleteConfirmation({ isOpen, onClose }) {
+function DeleteConfirmation({ rollNo, isOpen, onClose }) {
   const cancelRef = useRef();
 
   return (
@@ -76,13 +80,11 @@ function DeleteConfirmation({ isOpen, onClose }) {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-            Delete Customer
+            Delete User
           </AlertDialogHeader>
-
           <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
+            Are you sure you want to delete {rollNo}? This can't be undone!
           </AlertDialogBody>
-
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               Cancel

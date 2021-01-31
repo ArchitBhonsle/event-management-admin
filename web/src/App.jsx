@@ -1,12 +1,12 @@
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-import AuthRoute from "./components/AuthRoute";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Events from "./pages/Events";
-import Users from "./pages/Users";
+import AuthRoute from './components/AuthRoute';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Events from './pages/Events';
+import Users from './pages/Users';
 
-import UserLoader from "./components/UserLoader";
+import UserLoader from './components/UserLoader';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Login />
         </Route>
         <Route exact path='/'>
-          <Redirect to='/dashboard' />
+          <Redirect to='/users' />
         </Route>
         <AuthRoute path='/dashboard' component={Dashboard} />
         <AuthRoute path='/users' component={Users} />

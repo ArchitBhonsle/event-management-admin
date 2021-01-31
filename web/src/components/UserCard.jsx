@@ -37,8 +37,8 @@ export default function UserCard({
         gap={4}
         _hover={{
           borderColor: 'green.200',
-          cursor: 'pointer',
         }}
+        cursor='pointer'
         onClick={onOpen}
         ref={finalFocusRef}
       >
