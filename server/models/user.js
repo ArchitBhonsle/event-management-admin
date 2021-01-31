@@ -54,11 +54,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
     trim: true,
   },
-  events: [
-    {
-      type: String,
-    },
-  ],
+  events: [[{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }]],
   tokens: [
     {
       token: {
