@@ -35,10 +35,11 @@ async function addUsers() {
     if (docNum !== 5 * 60) {
       User.remove({});
       for (let dep = 1; dep <= 5; ++dep) {
+        const depUsers = [];
         for (let num = 1; num <= 60; ++num) {
           let rollNum = dep * 100000 + 1800 + num;
           rollNum = rollNum.toString();
-          const newUser = new User({
+          const newUser = {
             name: faker.name.findName(),
             email: faker.internet.email(),
             rollNo: rollNum,
@@ -46,9 +47,10 @@ async function addUsers() {
             password: rollNum,
             events: [],
             tokens: [],
-          });
-          await newUser.save();
+          };
+          depUsers.push(newUser);
         }
+        await User.insertMany(depUsers);
       }
       console.log('Added dummy users');
     }
