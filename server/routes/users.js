@@ -38,7 +38,11 @@ router.get('/:rollNo', (req, res) => {
     rollNo,
     'rollNo criteria moneyOwed department name email events',
     (err, docs) => {
-      if (!err) res.send(docs);
+      if (!err)
+        res.send({
+          data: docs[0],
+          error: null,
+        });
       else throw err;
     }
   );
