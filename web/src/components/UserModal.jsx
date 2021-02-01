@@ -82,7 +82,7 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
                 Delete
               </Button>
               <Flex w='60%' justifyContent='flex-end'>
-                <InputGroup w='50%'>
+                <InputGroup w='50%' size='lg'>
                   <InputLeftElement children='₹' />
                   <Input
                     variant='filled'
@@ -91,7 +91,7 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
                     onChange={e => setAmount(e.target.value)}
                   />
                 </InputGroup>
-                <Button colorScheme='green' onClick={paidConfOnOpen}>
+                <Button colorScheme='green' onClick={paidConfOnOpen} size='lg'>
                   Paid
                 </Button>
               </Flex>
