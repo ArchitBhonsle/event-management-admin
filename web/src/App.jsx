@@ -7,21 +7,24 @@ import Events from './pages/Events';
 import Users from './pages/Users';
 
 import UserLoader from './components/UserLoader';
+import Layout from './components/Layout';
 
 function App() {
   return (
     <UserLoader>
-      <Switch>
-        <Route path='/login'>
-          <Login />
-        </Route>
-        <Route exact path='/'>
-          <Redirect to='/users' />
-        </Route>
-        <AuthRoute path='/dashboard' component={Dashboard} />
-        <AuthRoute path='/users' component={Users} />
-        <AuthRoute path='/events' component={Events} />
-      </Switch>
+      <Layout>
+        <Switch>
+          <Route path='/login'>
+            <Login />
+          </Route>
+          <Route exact path='/'>
+            <Redirect to='/users' />
+          </Route>
+          <AuthRoute path='/dashboard' component={Dashboard} />
+          <AuthRoute path='/users' component={Users} />
+          <AuthRoute path='/events' component={Events} />
+        </Switch>
+      </Layout>
     </UserLoader>
   );
 }

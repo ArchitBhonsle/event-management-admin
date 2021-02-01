@@ -55,55 +55,53 @@ export default function Users() {
   }
 
   return (
-    <Layout>
-      <VStack spacing={6}>
-        <HStack w='100%'>
-          <Input
-            type='text'
-            placeholder='Roll Number or Email'
-            size='lg'
-            colorScheme='green'
-            value={searchText}
-            onChange={e => setSearchText(e.target.value)}
-            onKeyDown={async e => {
-              if (e.key === 'Enter') setNewSearch(searchText);
-            }}
-          />
-          {bigSearch ? (
-            <Button
-              colorScheme='green'
-              size='lg'
-              rightIcon={<MdSearch fontSize='1.5rem' />}
-              onClick={() => setNewSearch(searchText)}
-            >
-              Search
-            </Button>
-          ) : (
-            <IconButton
-              colorScheme='green'
-              size='lg'
-              icon={<MdSearch fontSize='1.5rem' />}
-              onClick={() => setNewSearch(searchText)}
-            ></IconButton>
-          )}
-        </HStack>
-        <Grid
-          gridTemplateColumns={{
-            base: '1fr',
-            md: 'repeat(2, 1fr)',
-            xl: 'repeat(3, 1fr)',
+    <VStack spacing={6}>
+      <HStack w='100%'>
+        <Input
+          type='text'
+          placeholder='Roll Number or Email'
+          size='lg'
+          colorScheme='green'
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          onKeyDown={async e => {
+            if (e.key === 'Enter') setNewSearch(searchText);
           }}
-          gap={4}
-          w='100%'
-        >
-          {usersList}
-        </Grid>
-        <PageControls
-          page={page}
-          changePage={newPage => setPage(newPage)}
-          maxPage={maxPage}
         />
-      </VStack>
-    </Layout>
+        {bigSearch ? (
+          <Button
+            colorScheme='green'
+            size='lg'
+            rightIcon={<MdSearch fontSize='1.5rem' />}
+            onClick={() => setNewSearch(searchText)}
+          >
+            Search
+          </Button>
+        ) : (
+          <IconButton
+            colorScheme='green'
+            size='lg'
+            icon={<MdSearch fontSize='1.5rem' />}
+            onClick={() => setNewSearch(searchText)}
+          ></IconButton>
+        )}
+      </HStack>
+      <Grid
+        gridTemplateColumns={{
+          base: '1fr',
+          md: 'repeat(2, 1fr)',
+          xl: 'repeat(3, 1fr)',
+        }}
+        gap={4}
+        w='100%'
+      >
+        {usersList}
+      </Grid>
+      <PageControls
+        page={page}
+        changePage={newPage => setPage(newPage)}
+        maxPage={maxPage}
+      />
+    </VStack>
   );
 }

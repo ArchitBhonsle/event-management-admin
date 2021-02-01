@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -12,12 +12,13 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
-} from "@chakra-ui/react";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+} from '@chakra-ui/react';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
-import { createHandleChange } from "../utils/createHandleChange";
-import easyFetch from "../utils/easyFetch";
-import useAuth from "../hooks/useAuth";
+import { createHandleChange } from '../utils/createHandleChange';
+import easyFetch from '../utils/easyFetch';
+import useAuth from '../hooks/useAuth';
+import Layout from '../components/Layout';
 
 export default function Login() {
   const history = useHistory();
@@ -26,13 +27,13 @@ export default function Login() {
 
   useEffect(() => {
     if (userData) {
-      history.push("/dashboard");
+      history.push('/dashboard');
     }
   }, [userData, history]);
 
   const [fields, setFields] = useState({
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   });
   const [errors, setErrors] = useState({
     username: null,
@@ -42,7 +43,7 @@ export default function Login() {
   const handleChange = createHandleChange(setFields, setErrors);
 
   const handleSubmit = async () => {
-    const response = await easyFetch("auth/login", fields);
+    const response = await easyFetch('auth/login', fields);
     const { data, error } = response;
     if (error) {
       error.map(({ field, message }) =>
@@ -50,16 +51,13 @@ export default function Login() {
       );
     } else {
       await userMutate(data, false);
-      history.push("/dashboard");
+      history.push('/dashboard');
     }
   };
 
   return (
-    <Box w='100%' px={{ base: 8, md: "15%" }} py={8}>
+    <Box w='100%'>
       <VStack w='400px' maxW='100%' mx='auto' spacing={4}>
-        <Heading size='xl' py={6} color='green.500'>
-          login
-        </Heading>
         <FormControl isInvalid={errors.username}>
           <FormLabel htmlFor='username'>username</FormLabel>
           <Input
@@ -77,18 +75,18 @@ export default function Login() {
             <Input
               id='password'
               name='password'
-              type={passShow ? "text" : "password"}
+              type={passShow ? 'text' : 'password'}
               placeholder='password'
               value={fields.password}
               onChange={handleChange}
             />
             <InputRightElement width='4.5rem'>
               <IconButton
-                aria-label={passShow ? "Hide" : "Show"}
+                aria-label={passShow ? 'Hide' : 'Show'}
                 icon={passShow ? <MdVisibility /> : <MdVisibilityOff />}
                 onClick={() => setPassShow(!passShow)}
-                colorScheme='black'
-                color='black'
+                colorScheme='green'
+                variant='ghost'
               />
             </InputRightElement>
           </InputGroup>

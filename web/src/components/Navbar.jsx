@@ -35,7 +35,7 @@ function NavButton({ children, link, func }) {
 
 export default function Navbar() {
   const history = useHistory();
-  const { userMutate } = useAuth();
+  const { loggedOut, userMutate } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
@@ -68,7 +68,7 @@ export default function Navbar() {
         colorScheme='green'
         onDoubleClick={toggleColorMode}
       >
-        η
+        η_admin
       </Heading>
       <Box display={{ base: 'block', md: 'none' }} onClick={toggle}>
         {isOpen ? <MdClose size={'2rem'} /> : <MdMenu size={'2rem'} />}
@@ -83,10 +83,16 @@ export default function Navbar() {
           direction={{ base: 'column', md: 'row' }}
           justify={['center', 'space-between', 'flex-end', 'flex-end']}
         >
-          <NavButton link='/dashboard'>dashboard</NavButton>
-          <NavButton link='/users'>users</NavButton>
-          <NavButton link='/events'>events</NavButton>
-          <NavButton func={logout}>log out</NavButton>
+          {loggedOut ? (
+            <NavButton link='/login'>login</NavButton>
+          ) : (
+            <>
+              <NavButton link='/dashboard'>dashboard</NavButton>
+              <NavButton link='/users'>users</NavButton>
+              <NavButton link='/events'>events</NavButton>
+              <NavButton func={logout}>log out</NavButton>
+            </>
+          )}
         </Stack>
       </Box>
     </Flex>

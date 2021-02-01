@@ -1,9 +1,5 @@
-import Layout from '../components/Layout';
+import { Center } from '@chakra-ui/react';
 
 export default function Events() {
-  return (
-    <Layout>
-      <h1>Hello</h1>
-    </Layout>
-  );
+  return <Center>Under development</Center>;
 }
