@@ -1,9 +1,9 @@
 const User = require('../models/user');
 
 module.exports = {
-  getUserFromRollNo: (rollNo, callback) => {
+  getUserFromRollNo: (rollNo, fields, callback) => {
     const regex = new RegExp(rollNo ? '^' + rollNo : '', 'i');
-    return User.find({ rollNo: regex }, (err, docs) => {
+    return User.find({ rollNo: regex }, fields, (err, docs) => {
       callback(err, docs);
     });
   },
@@ -11,6 +11,12 @@ module.exports = {
     const regex = new RegExp(email, 'i');
     return User.find({ email: regex }, (err, docs) => {
       callback(err, docs);
+    });
+  },
+  getUserCountFromRollNo: (rollNo, callback) => {
+    const regex = new RegExp(rollNo ? '^' + rollNo : '', 'i');
+    User.countDocuments({ rollNo: regex }, (err, result) => {
+      callback(err, result);
     });
   },
 };
