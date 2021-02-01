@@ -16,7 +16,7 @@ function getPageRange(page, max) {
   return [low, high];
 }
 
-export default function PageControls({ page, changePage, max }) {
+export default function PageControls({ page, changePage, maxPage }) {
   return (
     <HStack wrap='wrap'>
       <IconButton
@@ -31,7 +31,7 @@ export default function PageControls({ page, changePage, max }) {
         onClick={() => changePage(Math.max(1, page - 1))}
         isDisabled={page === 1}
       />
-      {getInclusiveRange(...getPageRange(page, max)).map(num => (
+      {getInclusiveRange(...getPageRange(page, maxPage)).map(num => (
         <Button
           key={num}
           colorScheme={`${page === num ? 'green' : 'gray'}`}
@@ -45,14 +45,14 @@ export default function PageControls({ page, changePage, max }) {
       <IconButton
         aria-label='go to next page'
         icon={<MdNavigateNext />}
-        onClick={() => changePage(Math.min(page + 1, max))}
-        isDisabled={page === max}
+        onClick={() => changePage(Math.min(page + 1, maxPage))}
+        isDisabled={page === maxPage}
       />
       <IconButton
         aria-label='go to last page'
         icon={<MdLastPage />}
-        onClick={() => changePage(max)}
-        isDisabled={page === max}
+        onClick={() => changePage(maxPage)}
+        isDisabled={page === maxPage}
       />
     </HStack>
   );

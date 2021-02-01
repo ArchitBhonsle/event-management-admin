@@ -6,40 +6,52 @@ import {
   Button,
   useBreakpointValue,
   IconButton,
+  Center,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { MdSearch } from 'react-icons/md';
+import useSWR from 'swr';
 
 import Layout from '../components/Layout';
 import PageControls from '../components/PageControls';
 import UserCard from '../components/UserCard';
 import createGetUri from '../utils/createGetUri';
-import easyFetch from '../utils/easyFetch';
 
-async function fetchUsers(searchText = '', page = 1) {
+function getFetchUri(searchText, page) {
   const params = [['page', page]];
   if (searchText) params.push(['search', searchText]);
-  const uri = createGetUri('users', params);
-  return await easyFetch(uri, {}, 'GET');
+  return createGetUri('users', params);
 }
 
 export default function Users() {
   const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [users, setUsers] = useState([]);
+  const [maxPage, setMaxPage] = useState(1);
   const bigSearch = useBreakpointValue({ base: false, md: true });
 
-  useEffect(() => {
-    (async function () {
-      const fetchedUsers = await fetchUsers();
-      setUsers(fetchedUsers);
-    })();
-  }, []);
+  const { data, error } = useSWR(getFetchUri(search, page));
 
-  async function changePage(newPage) {
-    setPage(newPage);
-    const fetchedUsers = await fetchUsers(searchText, newPage);
-    setUsers(fetchedUsers);
+  let usersList = null;
+  if (error) {
+    usersList = <Center>Something went wrong</Center>;
+  } else if (!data) {
+    usersList = <Center>Loading...</Center>;
+  } else {
+    usersList = data.data.users.map(user => (
+      <UserCard key={user.rollNo} user={user} />
+    ));
+  }
+
+  useEffect(() => {
+    if (data?.data?.maxPage) {
+      setMaxPage(data?.data?.maxPage);
+    }
+  }, [data]);
+
+  function setNewSearch(newSearchText) {
+    setSearch(newSearchText);
+    setPage(1);
   }
 
   return (
@@ -54,10 +66,7 @@ export default function Users() {
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
             onKeyDown={async e => {
-              if (e.key === 'Enter') {
-                const fetchedUsers = await fetchUsers(searchText, page);
-                setUsers(fetchedUsers);
-              }
+              if (e.key === 'Enter') setNewSearch(searchText);
             }}
           />
           {bigSearch ? (
@@ -65,10 +74,7 @@ export default function Users() {
               colorScheme='green'
               size='lg'
               rightIcon={<MdSearch fontSize='1.5rem' />}
-              onClick={async () => {
-                const fetchedUsers = await fetchUsers(searchText, page);
-                setUsers(fetchedUsers);
-              }}
+              onClick={() => setNewSearch(searchText)}
             >
               Search
             </Button>
@@ -77,10 +83,7 @@ export default function Users() {
               colorScheme='green'
               size='lg'
               icon={<MdSearch fontSize='1.5rem' />}
-              onClick={async () => {
-                const fetchedUsers = await fetchUsers(searchText, page);
-                setUsers(fetchedUsers);
-              }}
+              onClick={() => setNewSearch(searchText)}
             ></IconButton>
           )}
         </HStack>
@@ -93,11 +96,13 @@ export default function Users() {
           gap={4}
           w='100%'
         >
-          {users.map(user => (
-            <UserCard key={user.rollNo} user={user} />
-          ))}
+          {usersList}
         </Grid>
-        <PageControls page={page} changePage={changePage} max={30} />
+        <PageControls
+          page={page}
+          changePage={newPage => setPage(newPage)}
+          maxPage={maxPage}
+        />
       </VStack>
     </Layout>
   );
