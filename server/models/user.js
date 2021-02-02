@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Event = require('./event');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -54,7 +55,7 @@ const userSchema = new mongoose.Schema({
     default: 0,
     trim: true,
   },
-  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: Event }],
   tokens: [
     {
       token: {

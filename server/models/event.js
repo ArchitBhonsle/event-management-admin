@@ -1,4 +1,6 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const User = require('./user');
+const Team = require('./team');
 
 const eventSchema = new mongoose.Schema({
   eventId: {
@@ -21,6 +23,10 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  maxSeats: {
+    type: Number,
+    required: true,
+  },
   seats: {
     type: Number,
     required: true,
@@ -29,20 +35,15 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
   teamSize: {
     type: Number,
     required: true,
   },
-  registered: [
-    {
-      team: {
-        type: String,
-      },
-    },
-  ],
+  teams: [{ type: mongoose.Schema.Types.ObjectId, ref: Team }],
 });
 
-module.exports = mongoose.model("Event", eventSchema);
+module.exports = mongoose.model('Event', eventSchema);
 
 // events
 // - eventID
