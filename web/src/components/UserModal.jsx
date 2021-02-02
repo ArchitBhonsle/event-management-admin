@@ -22,7 +22,6 @@ import {
   ModalOverlay,
   Spinner,
   Table,
-  TableCaption,
   Text,
   Th,
   Thead,
