@@ -8,27 +8,25 @@ router.get('/', (req, res) => {
   const page = req.query.page;
   const pageLimit = 30;
 
-  userQueries.getUserCountFromRollNo(search, (err, result) => {
-    try {
-      userQueries
-        .getUserFromRollNo(
-          search,
-          'rollNo criteria moneyOwed department name',
-          (err, docs) => {
-            if (!err)
-              res.send({
-                data: { users: docs, maxPage: Math.ceil(result / 30) },
-                error: null,
-              });
-            else throw err;
-          }
-        )
-        .limit(pageLimit)
-        .skip((page - 1) * pageLimit);
-    } catch (err) {
-      console.log(err);
-    }
-  });
+  let result = { data: {}, error: {} };
+  try {
+    (async () => {
+      await userQueries.getUserFromRollNo(search, 'rollNo criteria moneyOwed department name', page, pageLimit)
+        .then(async (docs) => {
+          result.data.users = docs;
+          await docs;
+      });
+       
+      await userQueries.getUserCountFromRollNo(search).then(async (count) => {
+        result.data.maxPage = Math.ceil(count / pageLimit);
+        await count;
+      });
+  
+      res.send(result);
+    })();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.get('/:rollNo', (req, res) => {
