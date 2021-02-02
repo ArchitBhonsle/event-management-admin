@@ -9,6 +9,7 @@ import {
   Flex,
   Grid,
   Heading,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
@@ -26,9 +27,11 @@ import {
   Th,
   Thead,
   Tr,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Fragment, useRef, useState } from 'react';
+import { MdCheckCircle, MdCancel } from 'react-icons/md';
 import useSWR from 'swr';
 
 export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
@@ -54,6 +57,7 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
     onClose: paidConfOnClose,
   } = useDisclosure();
   const [amount, setAmount] = useState(0);
+  const amountRef = useRef();
 
   return (
     <>
@@ -61,6 +65,7 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
         isOpen={isOpen}
         onClose={onClose}
         finalFocusRef={finalFocusRef}
+        initialFocusRef={amountRef}
         size='xl'
         isCentered
         scrollBehavior='inside'
@@ -82,16 +87,30 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
                 Delete
               </Button>
               <Flex w='60%' justifyContent='flex-end'>
-                <InputGroup w='50%' size='lg'>
+                <InputGroup
+                  w='50%'
+                  style={{
+                    borderRadius: 0,
+                  }}
+                >
                   <InputLeftElement children='₹' />
                   <Input
+                    ref={amountRef}
                     variant='filled'
                     type='number'
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
+                    textAlign='right'
+                    style={{
+                      borderRadius: '0.375rem 0 0 0.375rem',
+                    }}
                   />
                 </InputGroup>
-                <Button colorScheme='green' onClick={paidConfOnOpen} size='lg'>
+                <Button
+                  colorScheme='green'
+                  onClick={paidConfOnOpen}
+                  borderLeftRadius={0}
+                >
                   Paid
                 </Button>
               </Flex>
@@ -119,29 +138,68 @@ const tableFields = [
   ['email', 'Email'],
   ['department', 'Department'],
   ['moneyOwed', 'Money Owed'],
+  ['criteria', 'Criteria'],
 ];
 
 function ModalDisplay({ user }) {
+  const colorRed = useColorModeValue('red.500', 'red.200');
+  const colorGreen = useColorModeValue('green.500', 'green.200');
+
   const table = tableFields.map(([key, val]) => [val, user[key]]);
+
+  function tableRow(key, val) {
+    if (key === 'Money Owed') {
+      return (
+        <Fragment key={key}>
+          <Text fontWeight='bold'>{key}</Text>
+          <Text fontWeight='bold' color={val < 0 ? colorRed : colorGreen}>
+            ₹ {val}
+          </Text>
+        </Fragment>
+      );
+    } else if (key === 'Criteria') {
+      return (
+        <Fragment key={key}>
+          <Text fontWeight='bold'>{key}</Text>
+          <HStack spacing={6}>
+            {Object.entries(val).map(([crit, state]) => (
+              <HStack alignItems='center' key={crit}>
+                <Text color={state ? colorGreen : colorRed}>
+                  {state ? (
+                    <MdCheckCircle size='1.25rem' />
+                  ) : (
+                    <MdCancel size='1.25rem' />
+                  )}
+                </Text>
+                <Text>{crit}</Text>
+              </HStack>
+            ))}
+          </HStack>
+        </Fragment>
+      );
+    } else {
+      return (
+        <Fragment key={key}>
+          <Text fontWeight='bold'>{key}</Text>
+          <Text>{val}</Text>
+        </Fragment>
+      );
+    }
+  }
 
   return (
     <>
-      <Grid alignItems='center' gridTemplateColumns='max-content auto' gap={4}>
-        {table.map(([key, val]) => (
-          <Fragment key={key}>
-            <Text fontWeight='bold'>{key}</Text>
-            {key === 'Money Owed' ? (
-              <Text fontSize='3xl' fontWeight='bold' textAlign='right'>
-                ₹ {val}
-              </Text>
-            ) : (
-              <Text>{val}</Text>
-            )}
-          </Fragment>
-        ))}
+      <Grid
+        alignItems='center'
+        gridTemplateColumns='max-content auto'
+        gap='1rem 2rem'
+      >
+        {table.map(([key, val]) => tableRow(key, val))}
       </Grid>
+      <Text fontWeight='bold' mt={4} mb={2}>
+        Events
+      </Text>
       <Table>
-        <TableCaption placement='top'>Events</TableCaption>
         <Thead>
           <Tr>
             <Th>Code</Th>
