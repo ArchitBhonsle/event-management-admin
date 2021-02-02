@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
-const User = require('./user');
-const Team = require('./team');
 
 const eventSchema = new mongoose.Schema({
   eventId: {
     type: String,
     required: true,
   },
+  day: Number,
   startTime: {
     type: String,
     required: true,
@@ -35,6 +34,7 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  prizeMoney: Number,
   teamSize: {
     type: Number,
     required: true,
