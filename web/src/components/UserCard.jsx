@@ -15,7 +15,8 @@ const tagMap = {
   ELEC: 'purple',
   MECH: 'pink',
   EXTC: 'yellow',
-  IT: 'red',
+  IT: 'green',
+  OTHER: 'black',
 };
 
 export default function UserCard({

@@ -3,17 +3,17 @@ import {
   Input,
   VStack,
   HStack,
-  Button,
-  useBreakpointValue,
   IconButton,
   Center,
   Spinner,
   Flex,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { MdSearch } from 'react-icons/md';
+import { useEffect, useRef, useState } from 'react';
+import { MdSearch, MdAdd } from 'react-icons/md';
 import useSWR from 'swr';
+import AddUserModal from '../components/AddUserModal';
 
 import PageControls from '../components/PageControls';
 import UserCard from '../components/UserCard';
@@ -29,7 +29,12 @@ export default function Users() {
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const bigSearch = useBreakpointValue({ base: false, md: true });
+  const searchRef = useRef();
+  const {
+    isOpen: addIsOpen,
+    onOpen: addOnOpen,
+    onClose: addOnClose,
+  } = useDisclosure();
 
   const { data, error } = useSWR(getFetchUri(search, page));
 
@@ -76,10 +81,13 @@ export default function Users() {
     setPage(1);
   }
 
+  useEffect(() => searchRef.current?.focus(), []);
+
   return (
     <VStack spacing={6}>
       <HStack w='100%'>
         <Input
+          ref={searchRef}
           type='text'
           placeholder='Roll Number'
           size='lg'
@@ -90,23 +98,24 @@ export default function Users() {
             if (e.key === 'Enter') setNewSearch(searchText);
           }}
         />
-        {bigSearch ? (
-          <Button
-            colorScheme='green'
-            size='lg'
-            rightIcon={<MdSearch fontSize='1.5rem' />}
-            onClick={() => setNewSearch(searchText)}
-          >
-            Search
-          </Button>
-        ) : (
-          <IconButton
-            colorScheme='green'
-            size='lg'
-            icon={<MdSearch fontSize='1.5rem' />}
-            onClick={() => setNewSearch(searchText)}
-          ></IconButton>
-        )}
+        <IconButton
+          colorScheme='green'
+          size='lg'
+          icon={<MdSearch fontSize='1.5rem' />}
+          onClick={() => setNewSearch(searchText)}
+        />
+        <IconButton
+          colorScheme='green'
+          variant='outline'
+          size='lg'
+          icon={<MdAdd fontSize='1.5rem' />}
+          onClick={addOnOpen}
+        />
+        <AddUserModal
+          isOpen={addIsOpen}
+          onClose={addOnClose}
+          finalFocusRef={searchRef}
+        />
       </HStack>
       {usersList}
     </VStack>
