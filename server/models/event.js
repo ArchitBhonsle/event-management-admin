@@ -35,12 +35,11 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
   teamSize: {
     type: Number,
     required: true,
   },
-  teams: [{ type: mongoose.Schema.Types.ObjectId, ref: Team }],
+  registered: [{ type: String }],
 });
 
 module.exports = mongoose.model('Event', eventSchema);
