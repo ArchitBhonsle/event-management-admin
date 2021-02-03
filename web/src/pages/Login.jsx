@@ -6,7 +6,6 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
   IconButton,
   Input,
   InputGroup,
@@ -18,7 +17,6 @@ import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
 import useAuth from '../hooks/useAuth';
-import Layout from '../components/Layout';
 
 export default function Login() {
   const history = useHistory();
@@ -27,7 +25,7 @@ export default function Login() {
 
   useEffect(() => {
     if (userData) {
-      history.push('/dashboard');
+      history.push('/users');
     }
   }, [userData, history]);
 
