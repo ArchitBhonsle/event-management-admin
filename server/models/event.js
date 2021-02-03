@@ -4,14 +4,15 @@ const eventSchema = new mongoose.Schema({
   eventId: {
     type: String,
     required: true,
+    uppercase: true,
+    unique: true,
   },
-  day: Number,
   startTime: {
-    type: String,
+    type: Date,
     required: true,
   },
   endTime: {
-    type: String,
+    type: Date,
     required: true,
   },
   category: {
@@ -21,6 +22,7 @@ const eventSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
+    default: '',
   },
   maxSeats: {
     type: Number,
