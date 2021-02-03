@@ -22,6 +22,7 @@ import {
   ModalOverlay,
   Spinner,
   Table,
+  Tbody,
   Text,
   Th,
   Thead,
@@ -158,7 +159,7 @@ function ModalDisplay({ user }) {
       );
     } else if (key === 'Criteria') {
       return (
-        <Fragment key={key}>
+        <Fragment>
           <Text fontWeight='bold'>{key}</Text>
           <HStack spacing={6}>
             {Object.entries(val).map(([crit, state]) => (
@@ -206,13 +207,15 @@ function ModalDisplay({ user }) {
             <Th isNumeric>Cost</Th>
           </Tr>
         </Thead>
-        {user.events.map(({ code, timing, cost }) => (
-          <Tr key={code}>
-            <Th>{code}</Th>
-            <Th>{timing}</Th>
-            <Th isNumeric>{cost}</Th>
-          </Tr>
-        ))}
+        <Tbody>
+          {user.events.map(({ code, timing, cost }) => (
+            <Tr key={code}>
+              <Th>{code}</Th>
+              <Th>{timing}</Th>
+              <Th isNumeric>{cost}</Th>
+            </Tr>
+          ))}
+        </Tbody>
       </Table>
     </>
   );
