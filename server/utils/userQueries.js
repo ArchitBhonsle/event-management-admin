@@ -28,17 +28,27 @@ module.exports = {
   },
   deleteUser: (rollNo) => {
     (async () => {
-      await User.find({ rollNo: rollNo }, 'events')
+      await User.findOne({ rollNo: rollNo }, 'events')
+      .populate('events')
       .exec()
       .then((docs) => {
-        for(let i=0;i<docs.data.events.length;++i) {
-          docs.data.events[i].seat--;
+        for(let i = 0; i < docs.length; ++i) {
+          Event.find({ _id: docs[i] }, 
+            (err, event) => {
+              event.seats++;
+              event.registered.pull(docs._id);
+              event.save((err) => {
+                if(err) console.log(err);
+              });
+            });
         }
-        docs.save();
-      })
+      });
       await User.deleteOne({ rollNo: rollNo }, (err) => {
         if(err) console.log(err);
       })
     })();
-  }
+  },
+  processPayment: (rollNo, amount, admin) => {
+
+  },
 };

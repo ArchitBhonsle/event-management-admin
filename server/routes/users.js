@@ -1,5 +1,4 @@
 const express = require('express');
-const { getUserCountFromRollNo } = require('../utils/userQueries');
 const router = express.Router();
 const userQueries = require('../utils/userQueries');
 const { use } = require('./auth');
@@ -40,13 +39,22 @@ router.get('/:rollNo', (req, res) => {
         data: docs[0],
         error: null,
       });
-    })
+    });
+
+  
+});
+
+router.post('/payment', (req, res) => {
+  const rollNo = req.body.rollNo;
+  const amount = req.body.amount;
+  const adminUsername = req.session.username;
+
+
 });
 
 router.delete('/:rollNo', (req, res) => {
   const rollNo = req.params.rollNo;
-
-
+  userQueries.deleteUser(rollNo);
 });
 
 module.exports = router;
