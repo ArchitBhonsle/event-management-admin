@@ -65,4 +65,29 @@ module.exports = {
       });
     })();
   },
+  generateUser: (name, email) => {
+    const regex = new RegExp('9' ? '^' + '9' : '', 'i');
+    let lastRoll = 0;
+    (async () => {
+      await User.find({ rollNo: regex })
+        .exec()
+        .then((docs) => {
+          console.log(docs);
+          if(docs.length > 0) 
+            lastRoll = Number(docs[docs.length - 1].rollNo);
+          else 
+            lastRoll = 900000;
+        });
+      const newUser = new User({
+        name: name,
+        email: email,
+        rollNo: lastRoll + 1,
+        department: 'OTHER',
+        password: 'abcd',
+        tokens: []
+      });
+      await newUser.save();
+      console.log(lastRoll);
+    })();
+  }
 };

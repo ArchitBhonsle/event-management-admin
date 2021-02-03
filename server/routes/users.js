@@ -24,6 +24,7 @@ router.get('/', (req, res) => {
       });
   
       res.send(result);
+      
     })();
   } catch (err) {
     console.log(err);
@@ -42,6 +43,11 @@ router.get('/:rollNo', (req, res) => {
     });
 });
 
+router.delete('/:rollNo', (req, res) => {
+  const rollNo = req.params.rollNo;
+  userQueries.deleteUser(rollNo);
+});
+
 router.post('/payment', (req, res) => {
   const rollNo = req.body.rollNo;
   const amount = req.body.amount;
@@ -50,9 +56,11 @@ router.post('/payment', (req, res) => {
   userQueries.processPayment(rollNo, amount, adminUsername);
 });
 
-router.delete('/:rollNo', (req, res) => {
-  const rollNo = req.params.rollNo;
-  userQueries.deleteUser(rollNo);
+router.post('/addUser', (req, res) => {
+  const name = req.body.name;
+  const email = req.body.email;
+
+  userQueries.generateUser(name, email);
 });
 
 module.exports = router;
