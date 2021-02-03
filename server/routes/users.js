@@ -40,8 +40,6 @@ router.get('/:rollNo', (req, res) => {
         error: null,
       });
     });
-
-  
 });
 
 router.post('/payment', (req, res) => {
@@ -49,7 +47,7 @@ router.post('/payment', (req, res) => {
   const amount = req.body.amount;
   const adminUsername = req.session.username;
 
-
+  userQueries.processPayment(rollNo, amount, adminUsername);
 });
 
 router.delete('/:rollNo', (req, res) => {

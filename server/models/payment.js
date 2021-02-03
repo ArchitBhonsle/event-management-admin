@@ -8,7 +8,6 @@ const paymentSchema = new mongoose.Schema({
   rollNo: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
     minlength: 6,
     validate(value) {

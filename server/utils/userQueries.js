@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const Event = require('../models/event');
+const Payment = require('../models/payment');
 
 module.exports = {
   getUserFromRollNo: (rollNo, fields, page, pageLimit) => {
@@ -49,6 +50,19 @@ module.exports = {
     })();
   },
   processPayment: (rollNo, amount, admin) => {
-
+    (async () => {
+      const payment = new Payment({
+        adminUsername: admin,
+        rollNo: rollNo,
+        amount: amount,
+      });
+      await payment.save();
+      await User.findOne({ rollNo: rollNo }, 'moneyOwed')
+      .exec()
+      .then((docs) => {
+        docs.moneyOwed -= amount;
+        docs.save();
+      });
+    })();
   },
 };
