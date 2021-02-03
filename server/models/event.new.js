@@ -12,14 +12,19 @@ const eventSchema = new mongoose.Schema({
     type: Number,
     required: true,
     enum: [1, 2, 3],
+    index: true,
   },
   start: {
-    type: Date,
+    type: String,
+    trim: true,
     required: true,
+    validate: /^\d-\d{1,2}:\d{2}$/,
   },
   end: {
-    type: Date,
+    type: String,
+    trim: true,
     required: true,
+    validate: /^\d-\d{1,2}:\d{2}$/,
   },
   title: {
     type: String,
@@ -79,5 +84,7 @@ const eventSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+eventSchema.index({ eventCode: 'text', title: 'text' });
 
 module.exports = mongoose.model('Event', eventSchema);
