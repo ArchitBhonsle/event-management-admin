@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userQueries = require('../utils/userQueries');
-const { use } = require('./auth');
+const isAuth = require('../middleware/isAuth');
+
+router.use(isAuth);
 
 router.get('/', (req, res) => {
   const search = req.query.search;
@@ -11,31 +13,46 @@ router.get('/', (req, res) => {
   let result = { data: {}, error: null };
   try {
     (async () => {
-      await userQueries.getUserFromRollNo(search, 'rollNo criteria moneyOwed department name', page, pageLimit)
-        .then(async (docs) => {
+      await userQueries
+        .getUserFromRollNo(
+          search,
+          'rollNo criteria moneyOwed department name',
+          page,
+          pageLimit
+        )
+        .then(async docs => {
           result.data.users = docs;
           await docs;
-      });
-       
-      await userQueries.getUserCountFromRollNo(search)
-        .then(async (count) => {
+        });
+
+      await userQueries.getUserCountFromRollNo(search).then(async count => {
         result.data.maxPage = Math.ceil(count / pageLimit);
         await count;
       });
-  
+
       res.send(result);
-      
     })();
   } catch (err) {
     console.log(err);
   }
 });
 
+router.post('/', (req, res) => {
+  const name = req.body.name;
+  const email = req.body.email;
+
+  userQueries.generateUser(name, email);
+});
+
 router.get('/:rollNo', (req, res) => {
   const rollNo = req.params.rollNo;
 
-  userQueries.getUserFromRollNo(rollNo, 'rollNo criteria moneyOwed department name email events')
-    .then((docs) => {
+  userQueries
+    .getUserFromRollNo(
+      rollNo,
+      'rollNo criteria moneyOwed department name email events'
+    )
+    .then(docs => {
       res.send({
         data: docs[0],
         error: null,
@@ -54,13 +71,6 @@ router.post('/payment', (req, res) => {
   const adminUsername = req.session.username;
 
   userQueries.processPayment(rollNo, amount, adminUsername);
-});
-
-router.post('/addUser', (req, res) => {
-  const name = req.body.name;
-  const email = req.body.email;
-
-  userQueries.generateUser(name, email);
 });
 
 module.exports = router;

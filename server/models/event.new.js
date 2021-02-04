@@ -85,6 +85,4 @@ const eventSchema = new mongoose.Schema({
   },
 });
 
-eventSchema.index({ eventCode: 'text', title: 'text' });
-
 module.exports = mongoose.model('Event', eventSchema);
