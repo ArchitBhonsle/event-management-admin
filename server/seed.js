@@ -6,7 +6,7 @@ const User = require('./models/user');
 const Event = require('./models/event');
 const { randomChoice, randomNumber } = require('./utils/random');
 
-async function addAdmin() {
+const addAdmin = async () => {
   try {
     const doc = await Admin.findOne({ username: 'hello' }).exec();
     if (doc === null) {
@@ -17,11 +17,13 @@ async function addAdmin() {
       });
       await newAdmin.save();
       console.log('Added Admin');
+    } else {
+      console.log('Admin already added');
     }
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 const departmentMap = {
   '1': 'COMPS',
@@ -44,6 +46,8 @@ const generateUser = rollNo => ({
   department: departmentMap[rollNo[0]],
   semester: semesterMap[rollNo.slice(2, 4)],
   password: faker.internet.password(),
+  collegeName: faker.company.companyName(),
+  phoneNo: faker.phone.phoneNumber('##########'),
   hasFilledProfile: true,
 });
 const addUsers = async () => {
