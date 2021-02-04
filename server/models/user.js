@@ -66,6 +66,16 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  collegeName: {
+    type: String,
+    trim: true,
+    validate: /^.{1,100}$/,
+  },
+  phoneNumber: {
+    type: String,
+    trim: true,
+    validate: /^\d{10}$/,
+  },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: Event }],
 });
 
