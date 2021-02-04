@@ -47,7 +47,7 @@ const generateUser = rollNo => ({
   hasFilledProfile: true,
 });
 const addUsers = async () => {
-  if ((await User.countDocuments()) === 6 * 4 * 61) {
+  if ((await User.countDocuments()) === 6 * 4 * 60) {
     console.log('Users already added');
     return;
   }
@@ -56,7 +56,7 @@ const addUsers = async () => {
   for (const dept in departmentMap) {
     const depUsers = [];
     for (const sem in semesterMap) {
-      for (let i = 0; i <= 60; ++i) {
+      for (let i = 1; i <= 60; ++i) {
         let srNo = i.toString();
         srNo = srNo.length === 1 ? '0' + srNo : srNo;
         const rollNo = dept + '0' + sem + srNo;
