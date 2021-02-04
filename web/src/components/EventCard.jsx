@@ -11,13 +11,15 @@ const categoryToEmojiMap = {
 };
 
 export default function EventCard({
-  eventCode = 'CODE',
-  title = 'Mock Event',
-  start = '1-12:00',
-  seats = 4,
-  maxSeats = 10,
-  category = 'C',
-  isSeminar = true,
+  event: {
+    eventCode = 'CODE',
+    title = 'Mock Event',
+    start = '1-12:00',
+    seats = 4,
+    maxSeats = 10,
+    category = 'C',
+    isSeminar = true,
+  },
 }) {
   return (
     <Grid
