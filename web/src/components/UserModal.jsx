@@ -34,6 +34,8 @@ import { Fragment, useRef, useState } from 'react';
 import { MdCheckCircle, MdCancel } from 'react-icons/md';
 import useSWR from 'swr';
 
+import easyFetch from '../utils/easyFetch';
+
 export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
   const { data, error } = useSWR(`users/${rollNo}`);
 
@@ -252,6 +254,9 @@ function DeleteConfirmation({ rollNo, isOpen, onClose }) {
   );
 }
 
+async function makePayment(rollNo, amount) {
+  return await easyFetch('payments', { rollNo, amount });
+}
 function PaidConfirmation({ rollNo, amount, isOpen, onClose }) {
   const cancelRef = useRef();
 
@@ -274,7 +279,14 @@ function PaidConfirmation({ rollNo, amount, isOpen, onClose }) {
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme='green' onClick={onClose} ml={3}>
+            <Button
+              colorScheme='green'
+              onClick={async () => {
+                await makePayment(rollNo, amount);
+                onClose();
+              }}
+              ml={3}
+            >
               Confirm
             </Button>
           </AlertDialogFooter>

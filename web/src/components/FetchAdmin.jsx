@@ -1,8 +1,8 @@
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from '@chakra-ui/react';
 
-import useAuth from "../hooks/useAuth";
+import useAuth from '../hooks/useAuth';
 
-export default function UserLoader({ children }) {
+export default function FetchAdmin({ children }) {
   const { loading } = useAuth();
 
   return (

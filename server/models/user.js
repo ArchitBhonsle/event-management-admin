@@ -79,4 +79,6 @@ const userSchema = new mongoose.Schema({
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: Event }],
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

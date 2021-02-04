@@ -14,20 +14,19 @@ import {
   ModalHeader,
   ModalOverlay,
   VStack,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { createHandleChange } from '../utils/createHandleChange';
 
 export default function AddUserModal({ isOpen, onClose, finalFocusRef }) {
   const [fields, setFields] = useState({
-    name: '',
+    rollNo: '',
     email: '',
-    department: 'OTHER',
   });
   const [errors, setErrors] = useState({
-    name: null,
+    rollNo: null,
     email: null,
-    department: null,
   });
 
   const handleChange = createHandleChange(setFields, setErrors);
@@ -49,20 +48,24 @@ export default function AddUserModal({ isOpen, onClose, finalFocusRef }) {
         <ModalCloseButton />
         <ModalBody>
           <VStack>
-            <FormControl isInvalid={errors.name}>
-              <FormLabel htmlFor='username'>name</FormLabel>
+            <FormControl isInvalid={errors.rollNo}>
+              <FormLabel htmlFor='rollNo'>roll number</FormLabel>
               <Input
-                id='username'
-                name='username'
-                placeholder='username'
-                value={fields.name}
+                id='rollNo'
+                name='rollNo'
+                placeholder='[1|2|3|4|5]XXXXX(X)'
+                value={fields.rollNo}
                 onChange={handleChange}
               />
+              <FormHelperText>
+                For 'other' students leave this blank
+              </FormHelperText>
               <FormErrorMessage>{errors.name}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.email}>
               <FormLabel>email</FormLabel>
               <Input
+                id='email'
                 type='email'
                 name='email'
                 placeholder='abc@def.com'
@@ -70,23 +73,6 @@ export default function AddUserModal({ isOpen, onClose, finalFocusRef }) {
                 onChange={handleChange}
               />
               <FormErrorMessage>{errors.email}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.department}>
-              <FormLabel>department</FormLabel>
-              <Select
-                placeholder='Select country'
-                name='department'
-                value={fields.department}
-                onChange={handleChange}
-              >
-                <option>COMPS</option>
-                <option>ELEC</option>
-                <option>MECH</option>
-                <option>EXTC</option>
-                <option>IT</option>
-                <option>OTHER</option>
-              </Select>
-              <FormErrorMessage>{errors.department}</FormErrorMessage>
             </FormControl>
           </VStack>
         </ModalBody>

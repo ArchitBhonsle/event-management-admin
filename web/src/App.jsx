@@ -5,12 +5,12 @@ import Login from './pages/Login';
 import Events from './pages/Events';
 import Users from './pages/Users';
 
-import UserLoader from './components/UserLoader';
+import FetchAdmin from './components/FetchAdmin';
 import Layout from './components/Layout';
 
 function App() {
   return (
-    <UserLoader>
+    <FetchAdmin>
       <Layout>
         <Switch>
           <Route path='/login'>
@@ -23,7 +23,7 @@ function App() {
           <AuthRoute path='/events' component={Events} />
         </Switch>
       </Layout>
-    </UserLoader>
+    </FetchAdmin>
   );
 }
 

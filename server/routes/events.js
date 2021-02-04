@@ -8,15 +8,19 @@ const isAuth = require('../middleware/isAuth');
 router.use(isAuth);
 
 router.get('/:day', async (req, res) => {
-  const day = req.params.day;
-  const events = await Event.find(
-    { day },
-    '-_id eventCode seats maxSeats start title'
-  );
-  res.send({
-    data: events,
-    error: null,
-  });
+  try {
+    const day = req.params.day;
+    const events = await Event.find(
+      { day },
+      '-_id eventCode seats maxSeats start title isSeminar category'
+    );
+    res.send({
+      data: events,
+      error: null,
+    });
+  } catch (err) {
+    console.error(err);
+  }
 });
 
 module.exports = router;

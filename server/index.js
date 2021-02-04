@@ -10,6 +10,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const eventsRoutes = require('./routes/events');
+const paymentsRoutes = require('./routes/payments');
 
 // Constants
 const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
@@ -55,6 +56,7 @@ require('./seed');
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/events', eventsRoutes);
+app.use('/payments', paymentsRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Up at http://localhost:${port}`);
