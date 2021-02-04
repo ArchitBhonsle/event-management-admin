@@ -49,7 +49,7 @@ export default function Login() {
       );
     } else {
       await userMutate(data, false);
-      history.push('/dashboard');
+      history.push('/users');
     }
   };
 
