@@ -4,103 +4,119 @@ const faker = require('faker');
 const Admin = require('./models/admin');
 const User = require('./models/user');
 const Event = require('./models/event');
-const randomNumber = require('./utils/randomNumberInRange');
+const { randomChoice, randomNumber } = require('./utils/random');
 
 async function addAdmin() {
   try {
     const doc = await Admin.findOne({ username: 'hello' }).exec();
     if (doc === null) {
-      console.log('Adding Admin');
       const newAdmin = new Admin({
         username: 'hello',
         password: await argon2.hash('generalk123'),
         name: 'hello there',
       });
       await newAdmin.save();
+      console.log('Added Admin');
     }
   } catch (error) {
     console.error(error);
   }
 }
 
-const category = ['TECH', 'CULT', 'FUN'];
-async function addEvents() {
-  try {
-    const docNum = await Event.countDocuments({});
-    if (docNum !== 10) {
-      let docs = [];
-      for (let i = 0; i < 10; ++i) {
-        const date = faker.date.future();
-        docs.push({
-          eventId: faker.lorem.word(),
-          startTime: date,
-          endTime: new Date(
-            date.getTime() + randomNumber(1, 4) * 1000 * 60 * 30
-          ),
-          category: category[randomNumber(0, 2)],
-          description: faker.lorem.paragraph(),
-          maxSeats: randomNumber(15, 30),
-          seats: randomNumber(0, 14),
-          price: randomNumber(1, 10) * 100,
-          prizeMoney: randomNumber(1, 5) * 1000,
-          teamSize: 1,
-        });
+const departmentMap = {
+  '1': 'COMPS',
+  '2': 'ELEC',
+  '3': 'EXTC',
+  '4': 'IT',
+  '5': 'MECH',
+  '9': 'OTHER',
+};
+const semesterMap = {
+  '17': 5,
+  '18': 6,
+  '19': 7,
+  '20': 8,
+};
+const generateUser = rollNo => ({
+  name: faker.name.firstName() + ' ' + faker.name.lastName(),
+  email: faker.internet.email(),
+  rollNo,
+  department: departmentMap[rollNo[0]],
+  semester: semesterMap[rollNo.slice(2, 4)],
+  password: faker.internet.password(),
+  hasFilledProfile: true,
+});
+const addUsers = async () => {
+  if ((await User.countDocuments()) === 6 * 4 * 61) {
+    console.log('Users already added');
+    return;
+  }
+
+  await User.deleteMany({});
+  for (const dept in departmentMap) {
+    const depUsers = [];
+    for (const sem in semesterMap) {
+      for (let i = 0; i <= 60; ++i) {
+        let srNo = i.toString();
+        srNo = srNo.length === 1 ? '0' + srNo : srNo;
+        const rollNo = dept + '0' + sem + srNo;
+        depUsers.push(generateUser(rollNo));
       }
-      await Event.insertMany(docs);
-      console.log('Adding Events');
     }
-  } catch (error) {
-    console.error(error);
+    await User.insertMany(depUsers);
   }
-}
+  console.log('Added Users');
+};
 
-async function addUsers() {
-  const deptMap = {
-    '1': 'COMPS',
-    '2': 'EXTC',
-    '3': 'ELEC',
-    '4': 'MECH',
-    '5': 'IT',
+const generateCode = num => (100000000000 + num).toString(36).toUpperCase();
+const generateTimes = day => {
+  const startHour = randomNumber(1, 22);
+  return {
+    start: `${day}-${startHour.toString()}:00`,
+    end: `${day}-${(startHour + 1).toString()}:30`,
   };
-
-  try {
-    const docNum = await User.countDocuments({});
-    if (docNum !== 5 * 60) {
-      User.remove({});
-      const events = await Event.find({}, '_id').exec();
-      for (let dep = 1; dep <= 5; ++dep) {
-        for (let num = 1; num <= 60; ++num) {
-          let rollNum = dep * 100000 + 1800 + num;
-          rollNum = rollNum.toString();
-          const filteredEvents = events.filter(() => Math.round(Math.random()));
-          const newUser = new User({
-            name: faker.name.findName(),
-            email: faker.internet.email(),
-            rollNo: rollNum,
-            department: deptMap[rollNum[0]],
-            password: rollNum,
-            events: filteredEvents,
-            tokens: [],
-          });
-          const savedUser = await newUser.save();
-          await Promise.all(
-            filteredEvents.map(async id => {
-              await Event.findByIdAndUpdate(id, {
-                $push: { registered: savedUser._id },
-              });
-            })
-          );
-        }
-      }
-      console.log('Added Users');
-    }
-  } catch (error) {
-    console.error(error);
+};
+const generateCategory = () => ['C', 'T', 'F'][randomNumber(0, 2)];
+const generatePrizeMoney = () => {
+  const prizeMoney = [randomNumber(10, 15) * 100];
+  for (let i = 0; i < randomNumber(0, 2); ++i) {
+    prizeMoney.push(prizeMoney[prizeMoney.length - 1] - 200);
   }
-}
+  return prizeMoney;
+};
+const addEvents = async () => {
+  if ((await Event.countDocuments()) === 3 * 15) {
+    console.log('Events already added');
+    return;
+  }
+  await Event.deleteMany({});
+  const events = [];
+  for (let day = 1; day <= 3; ++day) {
+    for (let i = 0; i < 15; ++i) {
+      events.push({
+        eventCode: generateCode(day * 100 + i),
+        day,
+        ...generateTimes(day),
+        title: faker.lorem.word(),
+        description: faker.lorem.paragraph(),
+        image: 'https://via.placeholder.com/150',
+        seats: 0,
+        maxSeats: 30,
+        category: generateCategory(),
+        isSeminar: randomChoice(),
+        teamSize: randomNumber(1, 4),
+        isTeamSizeStrict: randomChoice(),
+        entryFee: randomNumber(1, 10) * 100,
+        prizeMoney: generatePrizeMoney(),
+      });
+    }
+  }
+  await Event.insertMany(events);
+  console.log('Added Events');
+};
 
-(async function () {
+(async () => {
   await addAdmin();
-  await addEvents();
   await addUsers();
+  await addEvents();
 })();

@@ -1,57 +1,87 @@
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
-  eventId: {
+  eventCode: {
     type: String,
     required: true,
+    trim: true,
     uppercase: true,
     unique: true,
   },
-  startTime: {
-    type: Date,
+  day: {
+    type: Number,
     required: true,
+    enum: [1, 2, 3],
+    index: true,
   },
-  endTime: {
-    type: Date,
+  start: {
+    type: String,
+    trim: true,
     required: true,
+    validate: /^\d-\d{1,2}:\d{2}$/,
   },
-  category: {
+  end: {
+    type: String,
+    trim: true,
+    required: true,
+    validate: /^\d-\d{1,2}:\d{2}$/,
+  },
+  title: {
     type: String,
     required: true,
+    trim: true,
   },
   description: {
     type: String,
     required: true,
-    default: '',
+    trim: true,
   },
-  maxSeats: {
-    type: Number,
+  image: {
+    type: String,
     required: true,
+    trim: true,
   },
   seats: {
     type: Number,
     required: true,
   },
-  price: {
+  maxSeats: {
     type: Number,
     required: true,
+    min: 1,
   },
-  prizeMoney: Number,
+  category: {
+    type: String,
+    required: true,
+    trim: true,
+    uppercase: true,
+    enum: ['C', 'T', 'F'],
+  },
+  isSeminar: {
+    type: Boolean,
+    required: true,
+  },
   teamSize: {
     type: Number,
     required: true,
+    min: 1,
   },
-  registered: [{ type: String }],
+  isTeamSizeStrict: {
+    type: Boolean,
+    required: true,
+  },
+  entryFee: {
+    type: Number,
+    required: true,
+  },
+  prizeMoney: {
+    type: [Number],
+    required: true,
+  },
+  registered: {
+    type: [String],
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Event', eventSchema);
-
-// events
-// - eventID
-// - times { startTime, endTime }
-// - category
-// - description
-// - seats
-// - price
-// - teamSize
-// - registered [ teamID/userID ]

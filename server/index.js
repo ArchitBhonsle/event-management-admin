@@ -1,21 +1,22 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const mongoose = require("mongoose");
-const cors = require("cors");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-require("dotenv").config();
+const mongoose = require('mongoose');
+const cors = require('cors');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+require('dotenv').config();
 
 // Route imports
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/users");
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const eventsRoutes = require('./routes/events');
 
 // Constants
-const clientURL = process.env.CLIENT_URL || "http://localhost:3000",
+const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
   port = process.env.PORT || 4000,
-  dbCollection = process.env.DB_NAME || "etamax-admin",
+  dbCollection = process.env.DB_NAME || 'etamax-admin',
   mongoURL = `mongodb://localhost/${dbCollection}`,
-  sessionSecret = process.env.SESSION_URL || "etamin";
+  sessionSecret = process.env.SESSION_URL || 'etamin';
 
 mongoose.connect(mongoURL, {
   useNewUrlParser: true,
@@ -32,14 +33,14 @@ app.use(
 );
 app.use(
   session({
-    name: "etamin",
+    name: 'etamin',
     secret: sessionSecret,
-    resave: "false",
+    resave: 'false',
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
     },
     store: new MongoStore({
@@ -49,10 +50,11 @@ app.use(
 );
 app.use(express.json());
 
-require("./seed");
+require('./seed');
 
-app.use("/auth", authRoutes);
-app.use("/users/", userRoutes);
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/events', eventsRoutes);
 
 app.listen(port, () => {
   console.log(`🚀 Up at http://localhost:${port}`);
