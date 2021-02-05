@@ -5,7 +5,6 @@ import {
   FormLabel,
   FormErrorMessage,
   Input,
-  Select,
   Modal,
   ModalBody,
   ModalCloseButton,

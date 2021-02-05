@@ -17,6 +17,7 @@ import AddUserModal from '../components/AddUserModal';
 
 import PageControls from '../components/PageControls';
 import UserCard from '../components/UserCard';
+import UserModal from '../components/UserModal';
 import createGetUri from '../utils/createGetUri';
 
 function getFetchUri(searchText, page) {
@@ -29,6 +30,18 @@ export default function Users() {
   const [searchText, setSearchText] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+
+  const {
+    isOpen: userIsOpen,
+    onOpen: userOnOpen,
+    onClose: userOnClose,
+  } = useDisclosure();
+  const [modalRoll, setModalRoll] = useState(null);
+  function openUserModal(rollNo) {
+    setModalRoll(rollNo);
+    userOnOpen();
+  }
+
   const searchRef = useRef();
   const {
     isOpen: addIsOpen,
@@ -64,7 +77,11 @@ export default function Users() {
           w='100%'
         >
           {data.data.users.map(user => (
-            <UserCard key={user.rollNo} user={user} />
+            <UserCard
+              key={user.rollNo}
+              user={user}
+              openUserModal={openUserModal}
+            />
           ))}
         </Grid>
         <PageControls
@@ -72,6 +89,13 @@ export default function Users() {
           changePage={newPage => setPage(newPage)}
           maxPage={data.data.maxPage}
         />
+        {modalRoll && (
+          <UserModal
+            rollNo={modalRoll}
+            isOpen={userIsOpen}
+            onClose={userOnClose}
+          />
+        )}
       </>
     );
   }
@@ -84,40 +108,42 @@ export default function Users() {
   useEffect(() => searchRef.current?.focus(), []);
 
   return (
-    <VStack spacing={6}>
-      <HStack w='100%'>
-        <Input
-          ref={searchRef}
-          type='text'
-          placeholder='Roll Number'
-          size='lg'
-          colorScheme='green'
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          onKeyDown={async e => {
-            if (e.key === 'Enter') setNewSearch(searchText);
-          }}
-        />
-        <IconButton
-          colorScheme='green'
-          size='lg'
-          icon={<MdSearch fontSize='1.5rem' />}
-          onClick={() => setNewSearch(searchText)}
-        />
-        <IconButton
-          colorScheme='green'
-          variant='outline'
-          size='lg'
-          icon={<MdAdd fontSize='1.5rem' />}
-          onClick={addOnOpen}
-        />
-        <AddUserModal
-          isOpen={addIsOpen}
-          onClose={addOnClose}
-          finalFocusRef={searchRef}
-        />
-      </HStack>
-      {usersList}
-    </VStack>
+    <>
+      <VStack spacing={6}>
+        <HStack w='100%'>
+          <Input
+            ref={searchRef}
+            type='text'
+            placeholder='Roll Number'
+            size='lg'
+            colorScheme='green'
+            value={searchText}
+            onChange={e => setSearchText(e.target.value)}
+            onKeyDown={async e => {
+              if (e.key === 'Enter') setNewSearch(searchText);
+            }}
+          />
+          <IconButton
+            colorScheme='green'
+            size='lg'
+            icon={<MdSearch fontSize='1.5rem' />}
+            onClick={() => setNewSearch(searchText)}
+          />
+          <IconButton
+            colorScheme='green'
+            variant='outline'
+            size='lg'
+            icon={<MdAdd fontSize='1.5rem' />}
+            onClick={addOnOpen}
+          />
+          <AddUserModal
+            isOpen={addIsOpen}
+            onClose={addOnClose}
+            finalFocusRef={searchRef}
+          />
+        </HStack>
+        {usersList}
+      </VStack>
+    </>
   );
 }

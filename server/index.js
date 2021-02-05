@@ -53,6 +53,11 @@ app.use(express.json());
 
 require('./seed');
 
+app.use((req, res, next) => {
+  console.log('->', req.url);
+  next();
+});
+
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/events', eventsRoutes);

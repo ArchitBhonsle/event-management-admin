@@ -27,16 +27,16 @@ import {
   Th,
   Thead,
   Tr,
-  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { Fragment, useRef, useState } from 'react';
 import { MdCheckCircle, MdCancel } from 'react-icons/md';
 import useSWR from 'swr';
+import useModeColors from '../hooks/useModeColors';
 
 import easyFetch from '../utils/easyFetch';
 
-export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
+export default function UserModal({ isOpen, onClose, rollNo }) {
   const { data, error } = useSWR(`users/${rollNo}`);
 
   let content = null;
@@ -66,7 +66,6 @@ export default function UserModal({ isOpen, onClose, rollNo, finalFocusRef }) {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        finalFocusRef={finalFocusRef}
         initialFocusRef={amountRef}
         size='xl'
         isCentered
@@ -144,8 +143,7 @@ const tableFields = [
 ];
 
 function ModalDisplay({ user }) {
-  const colorRed = useColorModeValue('red.500', 'red.200');
-  const colorGreen = useColorModeValue('green.500', 'green.200');
+  const { red, green } = useModeColors();
 
   const table = tableFields.map(([key, val]) => [val, user[key]]);
 
@@ -154,19 +152,19 @@ function ModalDisplay({ user }) {
       return (
         <Fragment key={key}>
           <Text fontWeight='bold'>{key}</Text>
-          <Text fontWeight='bold' color={val < 0 ? colorRed : colorGreen}>
+          <Text fontWeight='bold' color={val < 0 ? red : green}>
             ₹ {val}
           </Text>
         </Fragment>
       );
     } else if (key === 'Criteria') {
       return (
-        <Fragment>
+        <Fragment key={key}>
           <Text fontWeight='bold'>{key}</Text>
           <HStack spacing={6}>
             {Object.entries(val).map(([crit, state]) => (
               <HStack alignItems='center' key={crit}>
-                <Text color={state ? colorGreen : colorRed}>
+                <Text color={state ? green : red}>
                   {state ? (
                     <MdCheckCircle size='1.25rem' />
                   ) : (
