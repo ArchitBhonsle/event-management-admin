@@ -5,7 +5,7 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  rollNo: {
+  userRollNo: {
     type: String,
     required: true,
   },
@@ -13,6 +13,19 @@ const paymentSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+});
+
+paymentSchema.virtual('admin', {
+  ref: 'Admin',
+  localField: 'adminUsername',
+  foreignField: 'username',
+  justOne: true,
+});
+paymentSchema.virtual('user', {
+  ref: 'User',
+  localField: 'userRollNo',
+  foreignField: 'rollNo',
+  justOne: true,
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);

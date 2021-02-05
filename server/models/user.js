@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const Event = require('./event');
-
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -76,7 +74,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: /^\d{10}$/,
   },
-  events: [{ type: mongoose.Schema.Types.ObjectId, ref: Event }],
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
 });
 
 const User = mongoose.model('User', userSchema);
