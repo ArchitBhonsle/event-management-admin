@@ -4,17 +4,6 @@ const validator = require('validator');
 const Event = require('./event');
 
 const userSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true,
-    trim: true,
-    validate(value) {
-      const re = /^\d{6,7}$/g;
-      if (!re.test(String(value))) {
-        throw new Error('Rollno is not valid');
-      }
-    },
-  },
   name: {
     type: String,
     validate: /^[a-zA-Z\']{1,50} [a-zA-Z\']{1,50}$/,
@@ -26,6 +15,18 @@ const userSchema = new mongoose.Schema({
     validate(value) {
       if (!validator.isEmail(value)) {
         throw new Error('Email is not valid');
+      }
+    },
+  },
+  rollNo: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    validate(value) {
+      const re = /^\d{6,7}$/g;
+      if (!re.test(String(value))) {
+        throw new Error('Rollno is not valid');
       }
     },
   },

@@ -40,9 +40,9 @@ const semesterMap = {
   '20': 8,
 };
 const generateUser = rollNo => ({
-  _id: rollNo,
   name: faker.name.firstName() + ' ' + faker.name.lastName(),
   email: faker.internet.email(),
+  rollNo,
   department: departmentMap[rollNo[0]],
   semester: semesterMap[rollNo.slice(2, 4)],
   password: faker.internet.password(),
