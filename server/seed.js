@@ -41,7 +41,7 @@ const semesterMap = {
 };
 const generateUser = rollNo => ({
   name: faker.name.firstName() + ' ' + faker.name.lastName(),
-  email: faker.internet.email(),
+  email: rollNo + '@gmail.com',
   rollNo,
   department: departmentMap[rollNo[0]],
   semester: semesterMap[rollNo.slice(2, 4)],
