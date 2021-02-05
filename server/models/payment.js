@@ -13,6 +13,10 @@ const paymentSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  time: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 paymentSchema.virtual('admin', {
@@ -27,6 +31,9 @@ paymentSchema.virtual('user', {
   foreignField: 'rollNo',
   justOne: true,
 });
+
+paymentSchema.set('toObject', { virtuals: true });
+paymentSchema.set('toJSON', { virtuals: true });
 
 const Payment = mongoose.model('Payment', paymentSchema);
 

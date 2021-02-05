@@ -17,6 +17,9 @@ teamSchema.virtual('members', {
   justOne: true,
 });
 
+teamSchema.set('toObject', { virtuals: true });
+teamSchema.set('toJSON', { virtuals: true });
+
 const Team = mongoose.model('Team', teamSchema);
 
 module.exports = Team;
