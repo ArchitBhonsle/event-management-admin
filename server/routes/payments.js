@@ -26,9 +26,9 @@ router.post('/', async (req, res) => {
     });
     await payment.save();
 
-    res.sendStatus(200);
+    res.status(200).send({ data: true, error: null });
   } catch (err) {
-    res.sendStatus(500);
+    res.status(500).send({ data: null, error: true });
     console.log(err);
   }
 });

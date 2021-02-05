@@ -6,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
-  Flex,
   Grid,
   Heading,
   HStack,
@@ -28,15 +27,17 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { Fragment, useRef, useState } from 'react';
 import { MdCheckCircle, MdCancel } from 'react-icons/md';
 import useSWR from 'swr';
 import useModeColors from '../hooks/useModeColors';
+import createToastOptions from '../utils/createToastOptions';
 
 import easyFetch from '../utils/easyFetch';
 
-export default function UserModal({ isOpen, onClose, rollNo }) {
+export default function UserModal({ isOpen, onClose, rollNo, setRollNo }) {
   const { data, error } = useSWR(`users/${rollNo}`);
 
   let content = null;
@@ -49,16 +50,11 @@ export default function UserModal({ isOpen, onClose, rollNo }) {
   }
 
   const {
-    isOpen: deleteConfIsOpen,
-    onOpen: deleteConfOnOpen,
-    onClose: deleteConfOnClose,
-  } = useDisclosure();
-  const {
     isOpen: paidConfIsOpen,
     onOpen: paidConfOnOpen,
     onClose: paidConfOnClose,
   } = useDisclosure();
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
   const amountRef = useRef();
 
   return (
@@ -79,56 +75,39 @@ export default function UserModal({ isOpen, onClose, rollNo }) {
           <ModalCloseButton />
           <ModalBody>{content}</ModalBody>
           <ModalFooter>
-            <Flex justifyContent='space-between' w='100%'>
-              <Button
-                variant='ghost'
-                colorScheme='red'
-                onClick={deleteConfOnOpen}
-              >
-                Delete
-              </Button>
-              <Flex w='60%' justifyContent='flex-end'>
-                <InputGroup
-                  w='50%'
-                  style={{
-                    borderRadius: 0,
-                  }}
-                >
-                  <InputLeftElement children='₹' />
-                  <Input
-                    ref={amountRef}
-                    variant='filled'
-                    type='number'
-                    value={amount}
-                    onChange={e => setAmount(e.target.value)}
-                    textAlign='right'
-                    style={{
-                      borderRadius: '0.375rem 0 0 0.375rem',
-                    }}
-                  />
-                </InputGroup>
-                <Button
-                  colorScheme='green'
-                  onClick={paidConfOnOpen}
-                  borderLeftRadius={0}
-                >
-                  Paid
-                </Button>
-              </Flex>
-            </Flex>
+            <InputGroup w='150px' maxW='90%'>
+              <InputLeftElement children='₹' />
+              <Input
+                ref={amountRef}
+                variant='filled'
+                type='number'
+                value={amount}
+                onChange={e => setAmount(e.target.value)}
+                textAlign='right'
+                style={{
+                  borderRadius: '0.375rem 0 0 0.375rem',
+                }}
+              />
+            </InputGroup>
+            <Button
+              colorScheme='green'
+              onClick={() => {
+                if (amount !== 0) paidConfOnOpen();
+              }}
+              borderLeftRadius={0}
+            >
+              Paid
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <DeleteConfirmation
-        rollNo={rollNo}
-        isOpen={deleteConfIsOpen}
-        onClose={deleteConfOnClose}
-      />
       <PaidConfirmation
         rollNo={rollNo}
+        setRollNo={setRollNo}
         amount={amount}
         isOpen={paidConfIsOpen}
         onClose={paidConfOnClose}
+        userModalOnClose={onClose}
       />
     </>
   );
@@ -221,42 +200,25 @@ function ModalDisplay({ user }) {
   );
 }
 
-function DeleteConfirmation({ rollNo, isOpen, onClose }) {
-  const cancelRef = useRef();
-
-  return (
-    <AlertDialog
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
-    >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize='xl' fontWeight='bold'>
-            Delete User
-          </AlertDialogHeader>
-          <AlertDialogBody>
-            Are you sure you want to delete {rollNo}? This can't be undone!
-          </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme='red' onClick={onClose} ml={3}>
-              Delete
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
-  );
-}
-
 async function makePayment(rollNo, amount) {
   return await easyFetch('payments', { rollNo, amount });
 }
-function PaidConfirmation({ rollNo, amount, isOpen, onClose }) {
+function PaidConfirmation({
+  rollNo,
+  setRollNo,
+  amount,
+  isOpen,
+  onClose,
+  userModalOnClose,
+}) {
   const cancelRef = useRef();
+
+  const successToast = useToast(
+    createToastOptions('Payment successfully regsitered')
+  );
+  const failedToast = useToast(
+    createToastOptions('Payment registration failed', 'error')
+  );
 
   return (
     <AlertDialog
@@ -267,7 +229,7 @@ function PaidConfirmation({ rollNo, amount, isOpen, onClose }) {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize='xl' fontWeight='bold'>
-            ₹{amount} by {rollNo}
+            ₹ {amount} by {rollNo}
           </AlertDialogHeader>
           <AlertDialogBody>
             Are you sure you want to confirm payment of {amount} by {rollNo}?
@@ -280,8 +242,12 @@ function PaidConfirmation({ rollNo, amount, isOpen, onClose }) {
             <Button
               colorScheme='green'
               onClick={async () => {
-                await makePayment(rollNo, amount);
+                const { data } = await makePayment(rollNo, amount);
+                if (data) successToast();
+                else failedToast();
                 onClose();
+                userModalOnClose();
+                setRollNo(null);
               }}
               ml={3}
             >

@@ -50,7 +50,6 @@ export default function Users() {
   } = useDisclosure();
 
   const { data, error } = useSWR(getFetchUri(search, page));
-
   let usersList = null;
   if (error) {
     usersList = (
@@ -92,6 +91,7 @@ export default function Users() {
         {modalRoll && (
           <UserModal
             rollNo={modalRoll}
+            setRollNo={setModalRoll}
             isOpen={userIsOpen}
             onClose={userOnClose}
           />
@@ -104,7 +104,6 @@ export default function Users() {
     setSearch(newSearchText);
     setPage(1);
   }
-
   useEffect(() => searchRef.current?.focus(), []);
 
   return (
