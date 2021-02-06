@@ -5,10 +5,7 @@ const isAuth = require('../middleware/isAuth');
 const Payment = require('../models/payment');
 const User = require('../models/user');
 
-// router.use(isAuth);
-router.use((req, res, next) => {
-  setTimeout(next, 5000);
-});
+router.use(isAuth);
 
 router.get('/', async (req, res) => {
   try {

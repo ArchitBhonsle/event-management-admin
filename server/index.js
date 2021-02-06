@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const eventsRoutes = require('./routes/events');
 const paymentsRoutes = require('./routes/payments');
+const routeLogger = require('./middleware/routeLogger');
 
 // Constants
 const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
@@ -53,10 +54,7 @@ app.use(express.json());
 
 require('./seed');
 
-app.use((req, res, next) => {
-  console.log('->', req.url);
-  next();
-});
+app.use(routeLogger);
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
