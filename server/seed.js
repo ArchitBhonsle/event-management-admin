@@ -5,6 +5,7 @@ const Admin = require('./models/admin');
 const User = require('./models/user');
 const Event = require('./models/event');
 const { randomChoice, randomNumber } = require('./utils/random');
+const Payment = require('./models/payment');
 
 const addAdmin = async () => {
   try {
@@ -119,8 +120,27 @@ const addEvents = async () => {
   console.log('Added Events');
 };
 
+const addPayments = async () => {
+  if ((await Payment.countDocuments()) === 100) {
+    console.log('Payments already added');
+    return;
+  }
+
+  for (let i = 0; i < 10; ++i) {
+    const users = await User.aggregate().sample(10);
+    const payments = users.map(({ rollNo }) => ({
+      adminUsername: 'hello',
+      userRollNo: rollNo,
+      amount: randomNumber(1, 10) * 100,
+    }));
+    Payment.insertMany(payments);
+  }
+  console.log('Added Payments');
+};
+
 (async () => {
   await addAdmin();
   await addUsers();
   await addEvents();
+  await addPayments();
 })();

@@ -1,14 +1,14 @@
-export function createHandleChange(setState, setErrorsState) {
-  return (event) => {
+export function createHandleChange(setState, setErrorsState = () => {}) {
+  return event => {
     if (setErrorsState) {
-      setErrorsState((state) => ({
+      setErrorsState(state => ({
         ...state,
-        [event.target.name]: null
+        [event.target.name]: null,
       }));
     }
-    setState((state) => ({
+    setState(state => ({
       ...state,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     }));
   };
 }

@@ -2,6 +2,7 @@ import { Text, Grid, Heading, HStack } from '@chakra-ui/react';
 
 import { MdPersonOutline } from 'react-icons/md';
 
+import useModeColors from '../hooks/useModeColors';
 import parseEventTime from '../utils/parseEventTime';
 
 const categoryToEmojiMap = {
@@ -21,6 +22,8 @@ export default function EventCard({
     isSeminar = true,
   },
 }) {
+  const { green } = useModeColors();
+
   return (
     <Grid
       p={4}
@@ -32,7 +35,7 @@ export default function EventCard({
       alignItems='center'
       gap={4}
       _hover={{
-        borderColor: 'green.200',
+        borderColor: green,
       }}
       cursor='pointer'
     >

@@ -1,19 +1,17 @@
 import { Center, Grid, Spinner, Flex } from '@chakra-ui/react';
 import useSWR from 'swr';
+import Error from './Error';
 import EventCard from './EventCard';
+import Loading from './Loading';
 
 export default function EventPanel({ day }) {
   const { data, error } = useSWR(`events/${day}`);
 
   let eventList = null;
   if (error) {
-    eventList = <Center>Something went wrong</Center>;
+    eventList = <Error />;
   } else if (!data) {
-    eventList = (
-      <Flex w='100%' justifyContent='center'>
-        <Spinner size='lg' colorScheme='green' />
-      </Flex>
-    );
+    eventList = <Loading />;
   } else {
     eventList = (
       <Grid

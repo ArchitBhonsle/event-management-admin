@@ -17,8 +17,9 @@ router.get('/', async (req, res) => {
       .skip((page - 1) * pageLimit)
       .select('-_id rollNo criteria moneyOwed department name')
       .exec();
-    const maxPage =
-      (await User.estimatedDocumentCount({ rollNo: regex })) / pageLimit;
+    const maxPage = Math.ceil(
+      (await User.estimatedDocumentCount({ rollNo: regex })) / pageLimit
+    );
 
     res.send({
       data: {

@@ -4,6 +4,7 @@ import AuthRoute from './components/AuthRoute';
 import Login from './pages/Login';
 import Events from './pages/Events';
 import Users from './pages/Users';
+import Payments from './pages/Payments';
 
 import FetchAdmin from './components/FetchAdmin';
 import Layout from './components/Layout';
@@ -21,6 +22,7 @@ function App() {
           </Route>
           <AuthRoute path='/users' component={Users} />
           <AuthRoute path='/events' component={Events} />
+          <AuthRoute path='/payments' component={Payments} />
         </Switch>
       </Layout>
     </FetchAdmin>

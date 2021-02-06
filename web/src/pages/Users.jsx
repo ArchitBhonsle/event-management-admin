@@ -14,6 +14,8 @@ import { useEffect, useRef, useState } from 'react';
 import { MdSearch, MdAdd } from 'react-icons/md';
 import useSWR from 'swr';
 import AddUserModal from '../components/AddUserModal';
+import Error from '../components/Error';
+import Loading from '../components/Loading';
 
 import PageControls from '../components/PageControls';
 import UserCard from '../components/UserCard';
@@ -52,17 +54,9 @@ export default function Users() {
   const { data, error } = useSWR(getFetchUri(search, page));
   let usersList = null;
   if (error) {
-    usersList = (
-      <Center>
-        <Text>Something went wrong</Text>
-      </Center>
-    );
+    usersList = <Error />;
   } else if (!data) {
-    usersList = (
-      <Flex w='100%' justifyContent='center'>
-        <Spinner size='lg' colorScheme='green' />
-      </Flex>
-    );
+    usersList = <Loading />;
   } else {
     usersList = (
       <>

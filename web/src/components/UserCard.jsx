@@ -1,6 +1,8 @@
 import { Grid, Heading, Tag, Text, HStack } from '@chakra-ui/react';
 import { MdCheck, MdClose } from 'react-icons/md';
 
+import useModeColors from '../hooks/useModeColors';
+
 const tagMap = {
   COMPS: 'blue',
   ELEC: 'purple',
@@ -14,6 +16,8 @@ export default function UserCard({
   user: { rollNo, department, criteria, moneyOwed, name },
   openUserModal,
 }) {
+  const { green } = useModeColors();
+
   return (
     <Grid
       p={4}
@@ -25,7 +29,7 @@ export default function UserCard({
       alignItems='center'
       gap={4}
       _hover={{
-        borderColor: 'green.200',
+        borderColor: green,
       }}
       cursor='pointer'
       onClick={() => openUserModal(rollNo)}

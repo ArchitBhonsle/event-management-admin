@@ -60,7 +60,7 @@ export default function Navbar() {
       alignItems='center'
       justifyContent='space-between'
       py={6}
-      px={{ base: 8, md: '15%' }}
+      px={{ base: 8, lg: '15%' }}
     >
       <Heading
         as='button'
@@ -89,6 +89,7 @@ export default function Navbar() {
             <>
               <NavButton link='/users'>users</NavButton>
               <NavButton link='/events'>events</NavButton>
+              <NavButton link='/payments'>payments</NavButton>
               <NavButton func={logout}>log out</NavButton>
             </>
           )}
