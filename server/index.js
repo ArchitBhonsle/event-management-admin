@@ -18,7 +18,7 @@ const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
   port = process.env.PORT || 4000,
   dbCollection = process.env.DB_NAME || 'etamax-admin',
   mongoURL = `mongodb://localhost/${dbCollection}`,
-  sessionSecret = process.env.SESSION_URL || 'etamin';
+  sessionSecret = process.env.SESSION || 'etamin';
 
 mongoose.connect(mongoURL, {
   useNewUrlParser: true,

@@ -7,7 +7,7 @@ import getDetailedDate from '../utils/getDetailedDate';
 export default function PaymentCard({
   payment: { adminUsername, userRollNo, amount, time },
 }) {
-  const { green, gray } = useModeColors();
+  const { green } = useModeColors();
 
   return (
     <VStack
