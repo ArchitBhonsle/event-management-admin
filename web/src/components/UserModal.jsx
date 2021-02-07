@@ -37,7 +37,13 @@ import createToastOptions from '../utils/createToastOptions';
 
 import easyFetch from '../utils/easyFetch';
 
-export default function UserModal({ isOpen, onClose, rollNo, setRollNo }) {
+export default function UserModal({
+  isOpen,
+  onClose,
+  rollNo,
+  setRollNo,
+  mutate,
+}) {
   const { data, error } = useSWR(`users/${rollNo}`);
 
   let content = null;
@@ -54,7 +60,7 @@ export default function UserModal({ isOpen, onClose, rollNo, setRollNo }) {
     onOpen: paidConfOnOpen,
     onClose: paidConfOnClose,
   } = useDisclosure();
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState('');
   const amountRef = useRef();
 
   return (
@@ -108,6 +114,7 @@ export default function UserModal({ isOpen, onClose, rollNo, setRollNo }) {
         isOpen={paidConfIsOpen}
         onClose={paidConfOnClose}
         userModalOnClose={onClose}
+        mutate={mutate}
       />
     </>
   );
@@ -210,6 +217,7 @@ function PaidConfirmation({
   isOpen,
   onClose,
   userModalOnClose,
+  mutate,
 }) {
   const cancelRef = useRef();
 
@@ -245,6 +253,7 @@ function PaidConfirmation({
                 const { data } = await makePayment(rollNo, amount);
                 if (data) successToast();
                 else failedToast();
+                await mutate();
                 onClose();
                 userModalOnClose();
                 setRollNo(null);

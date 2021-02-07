@@ -25,16 +25,11 @@ import {
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
 
-async function makeAddEventRequest(fields, setErrors, onClose) {
-  const { error } = await easyFetch('events', fields);
-  if (error) {
-    setErrors(e => ({ ...e, ...error }));
-  } else {
-    onClose();
-  }
+async function makeAddEventRequest(fields) {
+  return await easyFetch('events', fields);
 }
 
-export default function AddEventModal({ isOpen, onClose }) {
+export default function AddEventModal({ isOpen, onClose, mutateEvents }) {
   const firstRef = useRef();
 
   const [fields, setFields] = useState({
@@ -267,9 +262,15 @@ export default function AddEventModal({ isOpen, onClose }) {
         <ModalFooter>
           <Button
             colorScheme='green'
-            onClick={async () =>
-              makeAddEventRequest(fields, setErrors, onClose)
-            }
+            onClick={async () => {
+              const { error } = await makeAddEventRequest(fields);
+              if (error) {
+                setErrors(e => ({ ...e, ...error }));
+              } else {
+                await mutateEvents();
+                onClose();
+              }
+            }}
           >
             Create
           </Button>

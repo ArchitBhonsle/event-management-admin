@@ -18,7 +18,12 @@ import {
 import { useState } from 'react';
 import { createHandleChange } from '../utils/createHandleChange';
 
-export default function AddUserModal({ isOpen, onClose, finalFocusRef }) {
+export default function AddUserModal({
+  isOpen,
+  onClose,
+  finalFocusRef,
+  mutate,
+}) {
   const [fields, setFields] = useState({
     rollNo: '',
     email: '',
@@ -79,6 +84,7 @@ export default function AddUserModal({ isOpen, onClose, finalFocusRef }) {
           <Button
             colorScheme='green'
             onClick={() => {
+              mutate();
               onClose();
             }}
           >

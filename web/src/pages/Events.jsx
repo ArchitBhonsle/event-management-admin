@@ -11,12 +11,16 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { MdAdd } from 'react-icons/md';
+import { mutate } from 'swr';
 import AddEventModal from '../components/AddEventModal';
 import EditEventModal from '../components/EditEventModal';
 
 import EventPanel from '../components/EventPanel';
 
 const days = [1, 2, 3];
+
+const mutateEvents = () =>
+  Promise.all(days.map(day => mutate(`events/pages/${day}`)));
 
 export default function Events() {
   const tabColor = useColorModeValue('green.600', 'green.300');
@@ -73,7 +77,11 @@ export default function Events() {
         </TabPanels>
       </Tabs>
       {addEventIsOpen && (
-        <AddEventModal isOpen={addEventIsOpen} onClose={addEventOnClose} />
+        <AddEventModal
+          isOpen={addEventIsOpen}
+          onClose={addEventOnClose}
+          mutateEvents={mutateEvents}
+        />
       )}
       {editEventIsOpen && editEvent && (
         <EditEventModal
@@ -81,6 +89,7 @@ export default function Events() {
           setEditEvent={setEditEvent}
           isOpen={editEventIsOpen}
           onClose={editEventOnClose}
+          mutateEvents={mutateEvents}
         />
       )}
     </>

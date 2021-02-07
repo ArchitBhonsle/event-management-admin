@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import { MdSearch, MdAdd } from 'react-icons/md';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import AddUserModal from '../components/AddUserModal';
 import Error from '../components/Error';
 import Loading from '../components/Loading';
@@ -84,6 +84,7 @@ export default function Users() {
             setRollNo={setModalRoll}
             isOpen={userIsOpen}
             onClose={userOnClose}
+            mutate={() => mutate(getFetchUri(searchText, page))}
           />
         )}
       </>
@@ -126,6 +127,7 @@ export default function Users() {
             isOpen={addIsOpen}
             onClose={addOnClose}
             finalFocusRef={searchRef}
+            mutate={() => mutate(getFetchUri(searchText, page))}
           />
         </HStack>
         {usersList}

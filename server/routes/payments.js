@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
       filter,
       '-_id adminUsername userRollNo time amount'
     )
-      .sort('time')
+      .sort('-time')
       .limit(pageLimit)
       .skip((page - 1) * pageLimit)
       .exec();

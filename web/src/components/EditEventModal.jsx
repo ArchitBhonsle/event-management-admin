@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   Modal,
@@ -28,20 +28,8 @@ import useSWR from 'swr';
 import Error from './Error';
 import Loading from './Loading';
 
-async function makeEditEventRequest(
-  eventCode,
-  setEditEvent,
-  fields,
-  setErrors,
-  onClose
-) {
-  const { error } = await easyFetch(`events/${eventCode}`, fields, 'PUT');
-  if (error) {
-    setErrors(e => ({ ...e, ...error }));
-  } else {
-    onClose();
-    setEditEvent(null);
-  }
+async function makeEditEventRequest(eventCode, fields) {
+  return await easyFetch(`events/${eventCode}`, fields, 'PUT');
 }
 
 export default function EditEventModal({
@@ -49,7 +37,10 @@ export default function EditEventModal({
   setEditEvent,
   isOpen,
   onClose,
+  mutateEvents,
 }) {
+  const firstRef = useRef();
+
   const [fields, setFields] = useState({
     eventCode: '',
     day: 1,
@@ -106,7 +97,6 @@ export default function EditEventModal({
                 value={fields.eventCode}
                 onChange={handleChange}
               />
-              <FormErrorMessage>{errors.eventCode}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.day}>
               <FormLabel>day</FormLabel>
@@ -137,6 +127,7 @@ export default function EditEventModal({
             >
               <FormLabel>title</FormLabel>
               <Input
+                ref={firstRef}
                 name='title'
                 placeholder='an apt title'
                 value={fields.title}
@@ -275,15 +266,16 @@ export default function EditEventModal({
         <ModalFooter>
           <Button
             colorScheme='green'
-            onClick={async () =>
-              makeEditEventRequest(
-                editEvent,
-                setEditEvent,
-                fields,
-                setErrors,
-                onClose
-              )
-            }
+            onClick={async () => {
+              const { error } = await makeEditEventRequest(editEvent, fields);
+              if (error) {
+                setErrors(e => ({ ...e, ...error }));
+              } else {
+                await mutateEvents();
+                onClose();
+                setEditEvent(null);
+              }
+            }}
           >
             Edit
           </Button>
@@ -298,6 +290,7 @@ export default function EditEventModal({
 
   return (
     <Modal
+      initialFocusRef={firstRef}
       isOpen={isOpen}
       onClose={onClose}
       size='xl'
@@ -307,7 +300,7 @@ export default function EditEventModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Heading>Add Event</Heading>
+          <Heading>Edit Event</Heading>
         </ModalHeader>
         <ModalCloseButton />
         {content}
