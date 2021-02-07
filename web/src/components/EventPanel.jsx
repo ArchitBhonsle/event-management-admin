@@ -1,8 +1,10 @@
-import { Center, Grid, Spinner, Flex } from '@chakra-ui/react';
-import useSWR from 'swr';
+import { Grid } from '@chakra-ui/react';
+
 import Error from './Error';
 import EventCard from './EventCard';
 import Loading from './Loading';
+
+import useSWR from 'swr';
 
 export default function EventPanel({ day }) {
   const { data, error } = useSWR(`events/${day}`);

@@ -20,8 +20,8 @@ function paymentsParams(page, adminUsername, userRollNo) {
 export default function Payments() {
   const [page, setPage] = useState(1);
   const [fields, setFields] = useState({
-    adminUsername: null,
-    userRollNo: null,
+    adminUsername: '',
+    userRollNo: '',
   });
   const [searchFields, setSearchFields] = useState({
     adminUsername: '',
@@ -54,8 +54,8 @@ export default function Payments() {
             xl: 'repeat(4, 1fr)',
           }}
         >
-          {data.data.payments.map(payment => (
-            <PaymentCard payment={payment} />
+          {data.data.payments.map((payment, ind) => (
+            <PaymentCard key={ind} payment={payment} />
           ))}
         </Grid>
         <PageControls
@@ -69,6 +69,7 @@ export default function Payments() {
 
   function searchPayments() {
     setSearchFields(fields);
+    setPage(1);
   }
 
   return (
@@ -80,22 +81,25 @@ export default function Payments() {
       >
         <Input
           name='userRollNo'
-          size='lg'
           placeholder='User Roll No'
           value={fields.userRollNo}
           onChange={handleChange}
+          onKeyDown={async e => {
+            if (e.key === 'Enter') searchPayments();
+          }}
         />
         <Input
           name='adminUsername'
-          size='lg'
           placeholder='Admin Username'
           value={fields.adminUsername}
           onChange={handleChange}
+          onKeyDown={async e => {
+            if (e.key === 'Enter') searchPayments();
+          }}
         />
         <IconButton
           aria-label='search'
-          size='lg'
-          icon={<MdSearch fontSize='1.5rem' />}
+          icon={<MdSearch fontSize='1.25rem' />}
           colorScheme='green'
           onClick={searchPayments}
         />

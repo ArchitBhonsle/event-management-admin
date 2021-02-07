@@ -4,10 +4,6 @@ import {
   VStack,
   HStack,
   IconButton,
-  Center,
-  Spinner,
-  Flex,
-  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
@@ -108,7 +104,6 @@ export default function Users() {
             ref={searchRef}
             type='text'
             placeholder='Roll Number'
-            size='lg'
             colorScheme='green'
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
@@ -118,15 +113,13 @@ export default function Users() {
           />
           <IconButton
             colorScheme='green'
-            size='lg'
-            icon={<MdSearch fontSize='1.5rem' />}
+            icon={<MdSearch fontSize='1.25rem' />}
             onClick={() => setNewSearch(searchText)}
           />
           <IconButton
             colorScheme='green'
             variant='outline'
-            size='lg'
-            icon={<MdAdd fontSize='1.5rem' />}
+            icon={<MdAdd fontSize='1.25rem' />}
             onClick={addOnOpen}
           />
           <AddUserModal
