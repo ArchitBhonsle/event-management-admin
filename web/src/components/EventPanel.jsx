@@ -6,8 +6,8 @@ import Loading from './Loading';
 
 import useSWR from 'swr';
 
-export default function EventPanel({ day }) {
-  const { data, error } = useSWR(`events/${day}`);
+export default function EventPanel({ day, setEditEvent, editEventOnOpen }) {
+  const { data, error } = useSWR(`events/pages/${day}`);
 
   let eventList = null;
   if (error) {
@@ -26,7 +26,12 @@ export default function EventPanel({ day }) {
         w='100%'
       >
         {data.data.map((event, ind) => (
-          <EventCard key={ind} event={event} />
+          <EventCard
+            key={ind}
+            event={event}
+            setEditEvent={setEditEvent}
+            editEventOnOpen={editEventOnOpen}
+          />
         ))}
       </Grid>
     );

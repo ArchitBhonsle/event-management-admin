@@ -99,7 +99,7 @@ const addEvents = async () => {
   for (let day = 1; day <= 3; ++day) {
     for (let i = 0; i < 15; ++i) {
       events.push({
-        eventCode: generateCode(day * 100 + i),
+        eventCode: generateCode(day * 100 + i).toUpperCase(),
         day,
         ...generateTimes(day),
         title: faker.lorem.word(),

@@ -16,7 +16,6 @@ export default async function easyFetch(path, data = {}, method = 'POST') {
     return {
       data: null,
       error,
-      message: null,
     };
   }
 }

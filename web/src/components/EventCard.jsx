@@ -21,6 +21,8 @@ export default function EventCard({
     category = 'C',
     isSeminar = true,
   },
+  setEditEvent,
+  editEventOnOpen,
 }) {
   const { green } = useModeColors();
 
@@ -38,6 +40,10 @@ export default function EventCard({
         borderColor: green,
       }}
       cursor='pointer'
+      onClick={() => {
+        setEditEvent(eventCode);
+        editEventOnOpen();
+      }}
     >
       <HStack alignItems='center'>
         <Heading size='lg'>{eventCode}</Heading>
