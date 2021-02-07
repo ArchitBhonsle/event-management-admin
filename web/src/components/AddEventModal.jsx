@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-
 import {
   Modal,
   ModalOverlay,
@@ -20,10 +19,13 @@ import {
   NumberInput,
   NumberInputField,
   Button,
+  useToast,
 } from '@chakra-ui/react';
+import { MdAdd } from 'react-icons/md';
 
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
+import createToastOptions from '../utils/createToastOptions';
 
 async function makeAddEventRequest(fields) {
   return await easyFetch('events', fields);
@@ -64,6 +66,11 @@ export default function AddEventModal({ isOpen, onClose, mutateEvents }) {
     entryFee: null,
     prizeMoney: null,
   });
+
+  const successToast = useToast(createToastOptions('Event successfully added'));
+  const failedToast = useToast(
+    createToastOptions('Adding event failed', 'error')
+  );
 
   const handleChange = createHandleChange(setFields, setErrors);
 
@@ -261,14 +268,17 @@ export default function AddEventModal({ isOpen, onClose, mutateEvents }) {
         </ModalBody>
         <ModalFooter>
           <Button
+            rightIcon={<MdAdd fontSize='1rem' />}
             colorScheme='green'
             onClick={async () => {
               const { error } = await makeAddEventRequest(fields);
               if (error) {
                 setErrors(e => ({ ...e, ...error }));
+                failedToast();
               } else {
                 await mutateEvents();
                 onClose();
+                successToast();
               }
             }}
           >

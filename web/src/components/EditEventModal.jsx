@@ -20,13 +20,16 @@ import {
   NumberInput,
   NumberInputField,
   Button,
+  useToast,
 } from '@chakra-ui/react';
+import { MdEdit } from 'react-icons/md';
 
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
 import useSWR from 'swr';
 import Error from './Error';
 import Loading from './Loading';
+import createToastOptions from '../utils/createToastOptions';
 
 async function makeEditEventRequest(eventCode, fields) {
   return await easyFetch(`events/${eventCode}`, fields, 'PUT');
@@ -75,9 +78,14 @@ export default function EditEventModal({
   });
 
   const handleChange = createHandleChange(setFields, setErrors);
+  const successToast = useToast(
+    createToastOptions('Event successfully editted')
+  );
+  const failedToast = useToast(
+    createToastOptions('Editting event failed', 'error')
+  );
 
   const { data, error } = useSWR(`events/${editEvent}`);
-
   let content = null;
   if (error || data?.error) {
     content = <Error />;
@@ -265,15 +273,18 @@ export default function EditEventModal({
         </ModalBody>
         <ModalFooter>
           <Button
+            rightIcon={<MdEdit fontSize='1rem' />}
             colorScheme='green'
             onClick={async () => {
               const { error } = await makeEditEventRequest(editEvent, fields);
               if (error) {
                 setErrors(e => ({ ...e, ...error }));
+                failedToast();
               } else {
                 await mutateEvents();
                 onClose();
                 setEditEvent(null);
+                successToast();
               }
             }}
           >
