@@ -90,6 +90,7 @@ export default function Navbar() {
               <NavButton link='/users'>users</NavButton>
               <NavButton link='/events'>events</NavButton>
               <NavButton link='/payments'>payments</NavButton>
+              <NavButton link='/details'>details</NavButton>
               <NavButton func={logout}>log out</NavButton>
             </>
           )}

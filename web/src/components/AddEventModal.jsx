@@ -21,7 +21,7 @@ import {
   Button,
   useToast,
 } from '@chakra-ui/react';
-import { MdAdd } from 'react-icons/md';
+import { MdAddBox } from 'react-icons/md';
 
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
@@ -268,7 +268,7 @@ export default function AddEventModal({ isOpen, onClose, mutateEvents }) {
         </ModalBody>
         <ModalFooter>
           <Button
-            rightIcon={<MdAdd fontSize='1rem' />}
+            rightIcon={<MdAddBox fontSize='1rem' />}
             colorScheme='green'
             onClick={async () => {
               const { error } = await makeAddEventRequest(fields);
