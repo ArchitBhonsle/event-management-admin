@@ -126,6 +126,7 @@ const addPayments = async () => {
     return;
   }
 
+  await Payment.deleteMany({});
   for (let i = 0; i < 10; ++i) {
     const users = await User.aggregate().sample(10);
     const payments = users.map(({ rollNo }) => ({

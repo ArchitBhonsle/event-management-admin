@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 const User = require('../models/user');
+const { default: validator } = require('validator');
+const mailer = require('../utils/mailer');
 
 const path = require('path');
 const pdf = require('pdf-creator-node');
@@ -46,6 +48,77 @@ router.get('/', async (req, res) => {
   }
 });
 
+const rollToDept = {
+  '1': 'COMPS',
+  '2': 'ELEC',
+  '3': 'EXTC',
+  '4': 'IT',
+  '5': 'MECH',
+};
+router.post('/', async (req, res) => {
+  try {
+    let { rollNo, email } = req.body;
+
+    if (!validator.isEmail(email)) {
+      res.send({
+        data: null,
+        error: {
+          email: 'email not valid',
+        },
+      });
+      return;
+    }
+
+    if (!rollNo) {
+      const { rollNo: maxRollNo } = await User.findOne({})
+        .sort('-rollNo')
+        .select('-_id rollNo')
+        .exec();
+      rollNo = (parseInt(maxRollNo) + 1).toString();
+    } else if (!/^[12345]\d{5,6}$/.test(rollNo)) {
+      res.send({
+        data: null,
+        error: {
+          rollNo: 'email not valid',
+        },
+      });
+      return;
+    } else {
+      const user = await User.findOne({ rollNo });
+      if (user) {
+        res.send({
+          data: null,
+          error: {
+            rollNo: 'roll number already taken',
+          },
+        });
+        return;
+      }
+    }
+
+    const password = await mailer(email, rollNo);
+
+    const user = new User({
+      email,
+      rollNo,
+      password,
+      department: rollToDept[rollNo[0]],
+    });
+    await User.register(user, password);
+
+    res.send({
+      data: true,
+      error: null,
+    });
+  } catch (err) {
+    res.status(500).send({
+      data: null,
+      error: 'something went wrong',
+    });
+    console.error(err);
+  }
+});
+
 router.get('/report', async (req, res) => {
   try {
     const { department, semester } = req.query;
@@ -61,7 +134,8 @@ router.get('/report', async (req, res) => {
       rollNo,
       name,
       criteria: Object.entries(criteria)
-        .map(([k, v]) => `${v ? '✓' : '✗'}${k}`)
+        .filter(([, v]) => v === false)
+        .map(([k]) => k)
         .join(' '),
       moneyOwed: '₹' + moneyOwed,
     }));
@@ -71,13 +145,21 @@ router.get('/report', async (req, res) => {
       `${department}_${semester}.pdf`
     );
 
-    await pdf.create({
-      html: userReport,
-      data: {
-        users,
+    await pdf.create(
+      {
+        html: userReport,
+        data: {
+          department,
+          semester,
+          users,
+        },
+        path: resultPath,
       },
-      path: resultPath,
-    });
+      {
+        format: 'A4',
+        orientation: 'portrait',
+      }
+    );
 
     res.download(resultPath);
   } catch (err) {

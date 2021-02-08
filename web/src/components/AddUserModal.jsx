@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { createHandleChange } from '../utils/createHandleChange';
+import easyFetch from '../utils/easyFetch';
 
 export default function AddUserModal({
   isOpen,
@@ -83,9 +84,14 @@ export default function AddUserModal({
         <ModalFooter>
           <Button
             colorScheme='green'
-            onClick={() => {
-              mutate();
-              onClose();
+            onClick={async () => {
+              const { error } = await easyFetch('users', fields);
+              if (error) {
+                setErrors(error);
+              } else {
+                mutate();
+                onClose();
+              }
             }}
           >
             Add User

@@ -21,7 +21,10 @@
     "faker": "^5.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.12",
+    "nodemailer": "^6.4.17",
+    "passport-local-mongoose": "^6.1.0",
     "pdf-creator-node": "^1.4.2",
+    "rword": "^3.2.0",
     "validator": "^13.5.2"
   }
 }

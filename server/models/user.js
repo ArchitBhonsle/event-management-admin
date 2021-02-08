@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -78,5 +79,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+userSchema.plugin(passportLocalMongoose, { usernameField: 'rollNo' });
 
 module.exports = User;
