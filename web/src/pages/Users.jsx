@@ -7,9 +7,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
-import { MdSearch, MdAdd } from 'react-icons/md';
+import { MdSearch, MdAdd, MdAssignment } from 'react-icons/md';
 import useSWR, { mutate } from 'swr';
 import AddUserModal from '../components/AddUserModal';
+import UserReport from '../components/UserReport';
 import Error from '../components/Error';
 import Loading from '../components/Loading';
 
@@ -45,6 +46,12 @@ export default function Users() {
     isOpen: addIsOpen,
     onOpen: addOnOpen,
     onClose: addOnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: reportIsOpen,
+    onOpen: reportOnOpen,
+    onClose: reportOnClose,
   } = useDisclosure();
 
   const { data, error } = useSWR(getFetchUri(search, page));
@@ -123,9 +130,21 @@ export default function Users() {
             icon={<MdAdd fontSize='1.25rem' />}
             onClick={addOnOpen}
           />
+          <IconButton
+            colorScheme='green'
+            variant='outline'
+            icon={<MdAssignment fontSize='1.25rem' />}
+            onClick={reportOnOpen}
+          />
           <AddUserModal
             isOpen={addIsOpen}
             onClose={addOnClose}
+            finalFocusRef={searchRef}
+            mutate={() => mutate(getFetchUri(searchText, page))}
+          />
+          <UserReport
+            isOpen={reportIsOpen}
+            onClose={reportOnClose}
             finalFocusRef={searchRef}
             mutate={() => mutate(getFetchUri(searchText, page))}
           />

@@ -3,6 +3,15 @@ const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 const User = require('../models/user');
 
+const path = require('path');
+const pdf = require('pdf-creator-node');
+const fs = require('fs');
+const templatesPath = path.resolve(__dirname, '../templates');
+const userReport = fs.readFileSync(
+  path.resolve(templatesPath, 'user-report.html'),
+  'utf8'
+);
+
 router.use(isAuth);
 
 router.get('/', async (req, res) => {
@@ -37,12 +46,45 @@ router.get('/', async (req, res) => {
   }
 });
 
-// router.post('/', (req, res) => {
-//   const name = req.body.name;
-//   const email = req.body.email;
+router.get('/report', async (req, res) => {
+  try {
+    const { department, semester } = req.query;
 
-//   userQueries.generateUser(name, email);
-// });
+    let users = await User.find(
+      { department, semester },
+      '-_id rollNo name criteria moneyOwed'
+    )
+      .lean()
+      .exec();
+
+    users = users.map(({ rollNo, name, criteria, moneyOwed }) => ({
+      rollNo,
+      name,
+      criteria: Object.entries(criteria)
+        .map(([k, v]) => `${v ? '✓' : '✗'}${k}`)
+        .join(' '),
+      moneyOwed: '₹' + moneyOwed,
+    }));
+
+    const resultPath = path.resolve(
+      templatesPath,
+      `${department}_${semester}.pdf`
+    );
+
+    await pdf.create({
+      html: userReport,
+      data: {
+        users,
+      },
+      path: resultPath,
+    });
+
+    res.download(resultPath);
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
+  }
+});
 
 router.get('/:rollNo', async (req, res) => {
   try {
@@ -65,10 +107,5 @@ router.get('/:rollNo', async (req, res) => {
     console.error(err);
   }
 });
-
-// router.delete('/:rollNo', (req, res) => {
-//   const rollNo = req.params.rollNo;
-//   userQueries.deleteUser(rollNo);
-// });
 
 module.exports = router;

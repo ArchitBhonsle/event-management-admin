@@ -21,6 +21,7 @@
     "faker": "^5.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.12",
+    "pdf-creator-node": "^1.4.2",
     "validator": "^13.5.2"
   }
 }
