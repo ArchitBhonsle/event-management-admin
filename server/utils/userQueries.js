@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const Event = require('../models/event');
 const Payment = require('../models/payment');
+const { randomNumber } = require('../utils/randomNumberInRange');
+const { rword } = require('rword');
 
 module.exports = {
   getUserFromRollNo: (rollNo, fields, page, pageLimit) => {
@@ -66,28 +68,42 @@ module.exports = {
     })();
   },
   generateUser: (name, email) => {
+    const min = 100;
+    const max = 999;
+    const words = rword.generate(2, {
+      length: '3-4',
+      capitalize: 'first',
+    });
+    const password = words[0] + words[1] + Math.floor(Math.random() * (max - min) + min);
+
     const regex = new RegExp('9' ? '^' + '9' : '', 'i');
     let lastRoll = 0;
-    (async () => {
-      await User.find({ rollNo: regex })
+    return (async () => {
+      await User
+        .find({ rollNo: regex })
         .exec()
         .then((docs) => {
           console.log(docs);
           if(docs.length > 0) 
-            lastRoll = Number(docs[docs.length - 1].rollNo);
+            lastRoll = Number(docs[docs.length - 1].rollNo) + 1;
           else 
             lastRoll = 900000;
         });
       const newUser = new User({
         name: name,
         email: email,
-        rollNo: lastRoll + 1,
+        rollNo: lastRoll,
         department: 'OTHER',
-        password: 'abcd',
+        password: password,
         tokens: []
       });
       await newUser.save();
-      console.log(lastRoll);
+      
+      return { 
+        rollNo: lastRoll,
+        password: password,
+      };
     })();
+
   }
 };

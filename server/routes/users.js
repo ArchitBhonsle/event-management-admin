@@ -23,9 +23,8 @@ router.get('/', (req, res) => {
         result.data.maxPage = Math.ceil(count / pageLimit);
         await count;
       });
-  
+
       res.send(result);
-      
     })();
   } catch (err) {
     console.log(err);
@@ -60,8 +59,9 @@ router.post('/payment', (req, res) => {
 router.post('/addUser', (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
-
-  userQueries.generateUser(name, email);
+  (async () => {
+    res.send(await userQueries.generateUser(name, email));
+  });
 });
 
 module.exports = router;
