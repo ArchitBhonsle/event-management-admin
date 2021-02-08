@@ -3,6 +3,7 @@ const Event = require('../models/event');
 const Payment = require('../models/payment');
 const { randomNumber } = require('../utils/randomNumberInRange');
 const { rword } = require('rword');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   getUserFromRollNo: (rollNo, fields, page, pageLimit) => {
@@ -75,6 +76,8 @@ module.exports = {
       capitalize: 'first',
     });
     const password = words[0] + words[1] + Math.floor(Math.random() * (max - min) + min);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
 
     const regex = new RegExp('9' ? '^' + '9' : '', 'i');
     let lastRoll = 0;
@@ -94,7 +97,7 @@ module.exports = {
         email: email,
         rollNo: lastRoll,
         department: 'OTHER',
-        password: password,
+        password: hash,
         tokens: []
       });
       await newUser.save();
