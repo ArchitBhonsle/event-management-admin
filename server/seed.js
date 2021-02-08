@@ -7,6 +7,8 @@ const Event = require('./models/event');
 const { randomChoice, randomNumber } = require('./utils/random');
 const Payment = require('./models/payment');
 
+const rollToDept = require('./utils/rollToDept');
+
 const addAdmin = async () => {
   try {
     const doc = await Admin.findOne({ username: 'hello' }).exec();
@@ -14,7 +16,6 @@ const addAdmin = async () => {
       const newAdmin = new Admin({
         username: 'hello',
         password: await argon2.hash('generalk123'),
-        name: 'hello there',
       });
       await newAdmin.save();
       console.log('Added Admin');
@@ -44,9 +45,8 @@ const generateUser = rollNo => ({
   name: faker.name.firstName() + ' ' + faker.name.lastName(),
   email: rollNo + '@gmail.com',
   rollNo,
-  department: departmentMap[rollNo[0]],
+  department: rollToDept[rollNo[0]],
   semester: semesterMap[rollNo.slice(2, 4)],
-  password: faker.internet.password(),
   collegeName: faker.company.companyName(),
   phoneNo: faker.phone.phoneNumber('##########'),
   hasFilledProfile: true,

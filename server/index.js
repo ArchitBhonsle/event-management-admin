@@ -51,11 +51,14 @@ app.use(
     }),
   })
 );
+
 app.use(express.json());
 
 require('./seed');
 
-app.use(routeLogger);
+if (process.env.NODE_ENV !== 'production') {
+  app.use(routeLogger);
+}
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);

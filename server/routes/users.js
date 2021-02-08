@@ -4,6 +4,7 @@ const isAuth = require('../middleware/isAuth');
 const User = require('../models/user');
 const { default: validator } = require('validator');
 const mailer = require('../utils/mailer');
+const rollToDept = require('../utils/rollToDept');
 
 const path = require('path');
 const pdf = require('pdf-creator-node');
@@ -48,13 +49,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-const rollToDept = {
-  '1': 'COMPS',
-  '2': 'ELEC',
-  '3': 'EXTC',
-  '4': 'IT',
-  '5': 'MECH',
-};
 router.post('/', async (req, res) => {
   try {
     let { rollNo, email } = req.body;

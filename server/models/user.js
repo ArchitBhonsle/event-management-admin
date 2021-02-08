@@ -43,12 +43,6 @@ const userSchema = new mongoose.Schema({
     min: 1,
     max: 8,
   },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 4,
-  },
   criteria: {
     1: { type: Boolean, default: false },
     2: { type: Boolean, default: false },
@@ -78,7 +72,8 @@ const userSchema = new mongoose.Schema({
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
 });
 
-const User = mongoose.model('User', userSchema);
 userSchema.plugin(passportLocalMongoose, { usernameField: 'rollNo' });
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
