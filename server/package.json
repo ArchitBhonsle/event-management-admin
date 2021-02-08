@@ -21,6 +21,7 @@
     "faker": "^5.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.12",
+    "nodemailer": "^6.4.17",
     "validator": "^13.5.2"
   }
 }

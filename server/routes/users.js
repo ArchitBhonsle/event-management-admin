@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userQueries = require('../utils/userQueries');
+const mailer = require('../utils/mailer');
 const { use } = require('./auth');
 
 router.get('/', (req, res) => {
