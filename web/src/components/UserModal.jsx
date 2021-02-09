@@ -22,6 +22,7 @@ import {
   Spinner,
   Table,
   Tbody,
+  Td,
   Text,
   Th,
   Thead,
@@ -185,7 +186,7 @@ function ModalDisplay({ user }) {
       <Text fontWeight='bold' mt={4} mb={2}>
         Events
       </Text>
-      <Table>
+      <Table size='sm'>
         <Thead>
           <Tr>
             <Th>Code</Th>
@@ -194,11 +195,11 @@ function ModalDisplay({ user }) {
           </Tr>
         </Thead>
         <Tbody>
-          {user.events.map(({ code, timing, cost }) => (
-            <Tr key={code}>
-              <Th>{code}</Th>
-              <Th>{timing}</Th>
-              <Th isNumeric>{cost}</Th>
+          {user.events.map(({ eventCode, start, end, entryFee }) => (
+            <Tr key={eventCode}>
+              <Td>{eventCode}</Td>
+              <Td>{start + ' ' + end}</Td>
+              <Td isNumeric>{'₹ ' + entryFee}</Td>
             </Tr>
           ))}
         </Tbody>

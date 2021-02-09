@@ -8,6 +8,7 @@ const { randomChoice, randomNumber } = require('./utils/random');
 const Payment = require('./models/payment');
 
 const rollToDept = require('./utils/rollToDept');
+const Team = require('./models/team');
 
 const addAdmin = async () => {
   try {
@@ -27,19 +28,11 @@ const addAdmin = async () => {
   }
 };
 
-const departmentMap = {
-  '1': 'COMPS',
-  '2': 'ELEC',
-  '3': 'EXTC',
-  '4': 'IT',
-  '5': 'MECH',
-  '9': 'OTHER',
-};
 const semesterMap = {
-  '17': 5,
+  '17': 8,
   '18': 6,
-  '19': 7,
-  '20': 8,
+  '19': 4,
+  '20': 2,
 };
 const generateUser = rollNo => ({
   name: faker.name.firstName() + ' ' + faker.name.lastName(),
@@ -58,7 +51,7 @@ const addUsers = async () => {
   }
 
   await User.deleteMany({});
-  for (const dept in departmentMap) {
+  for (const dept in rollToDept) {
     const depUsers = [];
     for (const sem in semesterMap) {
       for (let i = 1; i <= 60; ++i) {
@@ -139,9 +132,89 @@ const addPayments = async () => {
   console.log('Added Payments');
 };
 
+const assignEvents = async () => {
+  for await (const currEvent of Event.find()) {
+    const {
+      day,
+      maxSeats,
+      category,
+      teamSize,
+      entryFee,
+      isTeamSizeStrict,
+    } = currEvent;
+
+    if (teamSize === 1) {
+      const howMany = maxSeats;
+      const users = await User.aggregate().sample(howMany).exec();
+
+      await Promise.all(
+        users.map(async user => {
+          await User.findByIdAndUpdate(user._id, {
+            [`criteria.${category}`]: true,
+            [`criteria.${day}`]: true,
+            $inc: { moneyOwed: entryFee },
+            $push: { events: currEvent._id },
+          });
+
+          await Event.findByIdAndUpdate(currEvent._id, {
+            $inc: { seats: 1 },
+            $push: { registered: user._id },
+          });
+        })
+      );
+    } else {
+      const alreadyHere = new Set();
+      async function getUser() {
+        let user = null;
+        do {
+          user = await User.aggregate().sample(1).exec();
+        } while (alreadyHere.has(user.rollNo));
+        return user;
+      }
+
+      const actualSize = isTeamSizeStrict
+        ? teamSize
+        : randomNumber(1, teamSize);
+      const howMany = maxSeats;
+
+      for (let i = 0; i < howMany; ++i) {
+        const users = await Promise.all(
+          [...Array(actualSize)].map(async () => await getUser())
+        );
+        const memberRollNos = users.map(({ rollNo }) => rollNo);
+
+        const team = new Team({
+          memberRollNos,
+          name: faker.lorem.words(2),
+        });
+        const savedTeam = await team.save();
+
+        await Event.findByIdAndUpdate(currEvent._id, {
+          $inc: { seats: 1 },
+          $push: { registered: savedTeam._id },
+        });
+
+        await Promise.all(
+          users.map(async ({ _id }) => {
+            await User.findByIdAndUpdate(_id, {
+              [`criteria.${category}`]: true,
+              [`criteria.${day}`]: true,
+              $inc: { moneyOwed: entryFee },
+              $push: { events: currEvent._id },
+            });
+          })
+        );
+      }
+    }
+  }
+
+  console.log('Events linked');
+};
+
 (async () => {
   await addAdmin();
   await addUsers();
   await addEvents();
   await addPayments();
+  // await assignEvents();
 })();

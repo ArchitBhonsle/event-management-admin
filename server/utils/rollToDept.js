@@ -4,4 +4,5 @@ module.exports = rollToDept = {
   '3': 'EXTC',
   '4': 'ELEC',
   '5': 'IT',
+  '9': 'OTHER',
 };
