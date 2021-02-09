@@ -14,7 +14,6 @@ teamSchema.virtual('members', {
   ref: 'User',
   localField: 'memberRollNos',
   foreignField: 'rollNo',
-  justOne: true,
 });
 
 teamSchema.set('toObject', { virtuals: true });

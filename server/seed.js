@@ -133,6 +133,8 @@ const addPayments = async () => {
 };
 
 const assignEvents = async () => {
+  console.log('Started assigning events');
+  const startTime = new Date();
   for await (const currEvent of Event.find()) {
     const {
       day,
@@ -167,14 +169,12 @@ const assignEvents = async () => {
       async function getUser() {
         let user = null;
         do {
-          user = await User.aggregate().sample(1).exec();
+          user = (await User.aggregate().sample(1).exec())[0];
         } while (alreadyHere.has(user.rollNo));
         return user;
       }
 
-      const actualSize = isTeamSizeStrict
-        ? teamSize
-        : randomNumber(1, teamSize);
+      const actualSize = teamSize;
       const howMany = maxSeats;
 
       for (let i = 0; i < howMany; ++i) {
@@ -207,8 +207,12 @@ const assignEvents = async () => {
       }
     }
   }
-
-  console.log('Events linked');
+  const endTime = new Date();
+  console.log(
+    'Completed assigning events',
+    (endTime - startTime) / 1000,
+    'secs'
+  );
 };
 
 (async () => {

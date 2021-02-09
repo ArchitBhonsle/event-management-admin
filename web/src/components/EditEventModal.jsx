@@ -21,8 +21,9 @@ import {
   NumberInputField,
   Button,
   useToast,
+  Flex,
 } from '@chakra-ui/react';
-import { MdEdit } from 'react-icons/md';
+import { MdAssignment, MdEdit } from 'react-icons/md';
 
 import { createHandleChange } from '../utils/createHandleChange';
 import easyFetch from '../utils/easyFetch';
@@ -30,6 +31,8 @@ import useSWR from 'swr';
 import Error from './Error';
 import Loading from './Loading';
 import createToastOptions from '../utils/createToastOptions';
+import download from 'downloadjs';
+import { API_URI } from '../utils/constants';
 
 async function makeEditEventRequest(eventCode, fields) {
   return await easyFetch(`events/${eventCode}`, fields, 'PUT');
@@ -272,24 +275,40 @@ export default function EditEventModal({
           </Grid>
         </ModalBody>
         <ModalFooter>
-          <Button
-            rightIcon={<MdEdit fontSize='1rem' />}
-            colorScheme='green'
-            onClick={async () => {
-              const { error } = await makeEditEventRequest(editEvent, fields);
-              if (error) {
-                setErrors(e => ({ ...e, ...error }));
-                failedToast();
-              } else {
-                await mutateEvents();
+          <Flex alignItems='center' justifyContent='space-between' w='100%'>
+            <Button
+              variant='outline'
+              leftIcon={<MdAssignment fontSize='1rem' />}
+              colorScheme='green'
+              onClick={async () => {
+                const uri = `${API_URI}events/report/${editEvent}`;
+                const res = await fetch(uri, { credentials: 'include' });
+                const blob = await res.blob();
+                download(blob, `event_${editEvent}.pdf`);
                 onClose();
-                setEditEvent(null);
-                successToast();
-              }
-            }}
-          >
-            Edit
-          </Button>
+              }}
+            >
+              Report
+            </Button>
+            <Button
+              rightIcon={<MdEdit fontSize='1rem' />}
+              colorScheme='green'
+              onClick={async () => {
+                const { error } = await makeEditEventRequest(editEvent, fields);
+                if (error) {
+                  setErrors(e => ({ ...e, ...error }));
+                  failedToast();
+                } else {
+                  await mutateEvents();
+                  onClose();
+                  setEditEvent(null);
+                  successToast();
+                }
+              }}
+            >
+              Edit
+            </Button>
+          </Flex>
         </ModalFooter>
       </>
     );
