@@ -45,7 +45,7 @@ const generateUser = rollNo => ({
   hasFilledProfile: true,
 });
 const addUsers = async () => {
-  if ((await User.countDocuments()) === 6 * 4 * 60) {
+  if ((await User.countDocuments()) === 6 * 4 * 30) {
     console.log('Users already added');
     return;
   }
