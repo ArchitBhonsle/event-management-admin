@@ -70,6 +70,12 @@ const userSchema = new mongoose.Schema({
     validate: /^\d{10}$/,
   },
   events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
+  eventTeams: [
+    {
+      eventid: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' },
+      teamid: { type: mongoose.Schema.Types.ObjectId, ref: 'Team' },
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'rollNo' });
