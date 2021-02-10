@@ -1,5 +1,17 @@
 const argon2 = require('argon2');
 const faker = require('faker');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+const dbCollection = process.env.DB_NAME || 'etamax-admin',
+  mongoURL = `mongodb://localhost/${dbCollection}`;
+
+mongoose.connect(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 
 const Admin = require('./models/admin');
 const User = require('./models/user');
@@ -45,25 +57,31 @@ const generateUser = rollNo => ({
   hasFilledProfile: true,
 });
 const addUsers = async () => {
-  if ((await User.countDocuments()) === 6 * 4 * 30) {
-    console.log('Users already added');
-    return;
-  }
-
-  await User.deleteMany({});
-  for (const dept in rollToDept) {
-    const depUsers = [];
-    for (const sem in semesterMap) {
-      for (let i = 1; i <= 30; ++i) {
-        let srNo = i.toString();
-        srNo = srNo.length === 1 ? '0' + srNo : srNo;
-        const rollNo = dept + '0' + sem + srNo;
-        depUsers.push(generateUser(rollNo));
-      }
+  try {
+    if ((await User.countDocuments()) === 6 * 4 * 30) {
+      console.log('Users already added');
+      return;
     }
-    await User.insertMany(depUsers);
+    const startTime = new Date();
+    console.log('Started adding users');
+    await User.deleteMany({});
+    for (const dept in rollToDept) {
+      for (const sem in semesterMap) {
+        for (let i = 1; i <= 30; ++i) {
+          let srNo = i.toString();
+          srNo = srNo.length === 1 ? '0' + srNo : srNo;
+          const rollNo = dept + '0' + sem + srNo;
+          await User.register(generateUser(rollNo), '12345');
+        }
+      }
+
+      await User.insertMany(depUsers);
+    }
+    const endTime = new Date();
+    console.log('Completed adding users', (endTime - startTime) / 1000, 'secs');
+  } catch (err) {
+    console.log(err);
   }
-  console.log('Added Users');
 };
 
 const generateCode = num => (100000000000 + num).toString(36).toUpperCase();
