@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const argon2 = require('argon2');
+const { errorLogger } = require('../utils/logger');
 
 const Admin = require('../models/admin');
 const isAuth = require('../middleware/isAuth');
@@ -32,14 +33,14 @@ router.post('/login', async (req, res) => {
       if (err) console.error({ err });
     });
   } catch (error) {
-    console.error(error);
+    errorLogger.error(error);
   }
 });
 
 router.post('/logout', isAuth, (req, res) => {
   req.session.destroy(err => {
     if (err) {
-      console.log(err);
+      errorLogger.error(err);
       res.send({ data: null, error: 'unknown error occurred' });
     } else {
       res.send({ data: true, error: null });
@@ -63,7 +64,7 @@ router.get('/me', isAuth, async (req, res) => {
       error: null,
     });
   } catch (error) {
-    console.error(error);
+    errorLogger.error(error);
   }
 });
 

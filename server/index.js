@@ -54,10 +54,8 @@ app.use(
 
 app.use(express.json());
 
-// if (process.env.NODE_ENV !== 'production') {
-//   require('./seed');
-//   app.use(routeLogger);
-// }
+require('./seed');
+app.use(routeLogger);
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);

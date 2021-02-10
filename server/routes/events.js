@@ -9,6 +9,7 @@ const eventValidation = require('../utils/eventValidation');
 const path = require('path');
 const pdf = require('pdf-creator-node');
 const fs = require('fs');
+const { errorLogger } = require('../utils/logger');
 const templatesPath = path.resolve(__dirname, '../templates');
 const eventReport = fs.readFileSync(
   path.resolve(templatesPath, 'event-report.html'),
@@ -22,84 +23,89 @@ const teamReport = fs.readFileSync(
 router.use(isAuth);
 
 router.get('/report/:eventCode', async (req, res) => {
-  const eventCode = req.params.eventCode;
+  try {
+    const eventCode = req.params.eventCode;
 
-  const event = await Event.findOne({ eventCode });
-  if (event.teamSize === 1) {
-    await event.execPopulate({
-      path: 'registered',
-      model: 'User',
-      select: '-_id rollNo name',
-      options: { lean: true },
-    });
-
-    const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
-
-    await pdf.create(
-      {
-        html: eventReport,
-        data: {
-          title: event.title,
-          users: event.registered,
-        },
-        path: resultPath,
-      },
-      {
-        format: 'A4',
-        orientation: 'portrait',
-      }
-    );
-
-    res.download(resultPath);
-  } else {
-    await event.execPopulate({
-      path: 'registered',
-      model: 'Team',
-      select: '-_id name memberRollNos',
-      options: { lean: true },
-      populate: [
-        {
-          path: 'members',
-          select: '-_id rollNo name',
-          options: { lean: true },
-        },
-      ],
-    });
-
-    const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
-
-    const data = [];
-    event.registered.forEach(({ name, members }) => {
-      data.push({
-        teamName: name,
-        teamSpan: members.length,
-        rollNo: members[0].rollNo,
-        name: members[0].name,
+    const event = await Event.findOne({ eventCode });
+    if (event.teamSize === 1) {
+      await event.execPopulate({
+        path: 'registered',
+        model: 'User',
+        select: '-_id rollNo name',
+        options: { lean: true },
       });
-      members.slice(1).forEach(member => {
+
+      const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
+
+      await pdf.create(
+        {
+          html: eventReport,
+          data: {
+            title: event.title,
+            users: event.registered,
+          },
+          path: resultPath,
+        },
+        {
+          format: 'A4',
+          orientation: 'portrait',
+        }
+      );
+
+      res.download(resultPath);
+    } else {
+      await event.execPopulate({
+        path: 'registered',
+        model: 'Team',
+        select: '-_id name memberRollNos',
+        options: { lean: true },
+        populate: [
+          {
+            path: 'members',
+            select: '-_id rollNo name',
+            options: { lean: true },
+          },
+        ],
+      });
+
+      const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
+
+      const data = [];
+      event.registered.forEach(({ name, members }) => {
         data.push({
-          rollNo: member.rollNo,
-          name: member.name,
+          teamName: name,
+          teamSpan: members.length,
+          rollNo: members[0].rollNo,
+          name: members[0].name,
+        });
+        members.slice(1).forEach(member => {
+          data.push({
+            rollNo: member.rollNo,
+            name: member.name,
+          });
         });
       });
-    });
 
-    await pdf.create(
-      {
-        html: teamReport,
-        data: {
-          title: event.title,
-          data,
+      await pdf.create(
+        {
+          html: teamReport,
+          data: {
+            title: event.title,
+            data,
+          },
+          path: resultPath,
         },
-        path: resultPath,
-      },
-      {
-        format: 'A4',
-        orientation: 'portrait',
-      }
-    );
+        {
+          format: 'A4',
+          orientation: 'portrait',
+        }
+      );
 
-    res.download(resultPath);
+      res.download(resultPath);
+    }
+  } catch (err) {
+    res.sendStatus(500);
+    errorLogger.error(err);
   }
 });
 
@@ -126,7 +132,7 @@ router.get('/:eventCode', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 
@@ -161,7 +167,7 @@ router.put('/:eventCode', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 
@@ -181,7 +187,7 @@ router.get('/pages/:day', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 
@@ -207,7 +213,7 @@ router.post('/', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 

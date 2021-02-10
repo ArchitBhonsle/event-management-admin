@@ -9,6 +9,7 @@ const rollToDept = require('../utils/rollToDept');
 const path = require('path');
 const pdf = require('pdf-creator-node');
 const fs = require('fs');
+const { errorLogger } = require('../utils/logger');
 const templatesPath = path.resolve(__dirname, '../templates');
 const userReport = fs.readFileSync(
   path.resolve(templatesPath, 'user-report.html'),
@@ -45,7 +46,7 @@ router.get('/', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.log(err);
+    errorLogger.log(err);
   }
 });
 
@@ -109,7 +110,7 @@ router.post('/', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 
@@ -157,8 +158,11 @@ router.get('/report', async (req, res) => {
 
     res.download(resultPath);
   } catch (err) {
-    res.sendStatus(500);
-    console.log(err);
+    res.status(500).send({
+      data: null,
+      error: 'something went wrong',
+    });
+    errorLogger.log(err);
   }
 });
 
@@ -180,7 +184,7 @@ router.get('/:rollNo', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 

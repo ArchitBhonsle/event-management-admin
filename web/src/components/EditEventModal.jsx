@@ -281,10 +281,14 @@ export default function EditEventModal({
               leftIcon={<MdAssignment fontSize='1rem' />}
               colorScheme='green'
               onClick={async () => {
-                const uri = `${API_URI}events/report/${editEvent}`;
-                const res = await fetch(uri, { credentials: 'include' });
-                const blob = await res.blob();
-                download(blob, `event_${editEvent}.pdf`);
+                try {
+                  const uri = `${API_URI}events/report/${editEvent}`;
+                  const res = await fetch(uri, { credentials: 'include' });
+                  const blob = await res.blob();
+                  download(blob, `event_${editEvent}.pdf`);
+                } catch (err) {
+                  console.error(err);
+                }
                 onClose();
               }}
             >

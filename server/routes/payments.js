@@ -4,6 +4,7 @@ const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 const Payment = require('../models/payment');
 const User = require('../models/user');
+const { errorLogger } = require('../utils/logger');
 
 router.use(isAuth);
 
@@ -40,7 +41,7 @@ router.get('/', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
-    console.error(err);
+    errorLogger.error(err);
   }
 });
 
@@ -66,7 +67,7 @@ router.post('/', async (req, res) => {
     res.status(200).send({ data: true, error: null });
   } catch (err) {
     res.status(500).send({ data: null, error: true });
-    console.log(err);
+    errorLogger.log(err);
   }
 });
 

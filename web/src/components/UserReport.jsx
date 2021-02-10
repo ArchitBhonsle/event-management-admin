@@ -92,10 +92,14 @@ export default function UserReport({ isOpen, onClose, finalFocusRef }) {
             rightIcon={<MdFileDownload />}
             colorScheme='green'
             onClick={async () => {
-              const uri = `${API_URI}users/report?department=${fields.department}&semester=${fields.semester}`;
-              const res = await fetch(uri, { credentials: 'include' });
-              const blob = await res.blob();
-              download(blob, `${fields.department}_${fields.semester}.pdf`);
+              try {
+                const uri = `${API_URI}users/report?department=${fields.department}&semester=${fields.semester}`;
+                const res = await fetch(uri, { credentials: 'include' });
+                const blob = await res.blob();
+                download(blob, `${fields.department}_${fields.semester}.pdf`);
+              } catch (err) {
+                console.error(err);
+              }
               onClose();
             }}
           >
