@@ -74,8 +74,6 @@ const addUsers = async () => {
           await User.register(generateUser(rollNo), '12345');
         }
       }
-
-      await User.insertMany(depUsers);
     }
     const endTime = new Date();
     console.log('Completed adding users', (endTime - startTime) / 1000, 'secs');
