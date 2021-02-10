@@ -1,9 +1,9 @@
-const path = require('path')
-const slogger = require('simple-node-logger')
+const path = require('path');
+const slogger = require('simple-node-logger');
 
 const pathOpts = {
   errorEventName: 'error',
-  logDirectory: path.join(__dirname, '..' , 'logs', 'requests'),
+  logDirectory: path.join(__dirname, '..', 'logs', 'requests'),
   fileNamePattern: '<DATE>.log',
   dateFormat: 'YYYY.MM.DD',
 };
@@ -15,6 +15,6 @@ const errorOpts = {
 };
 
 module.exports = {
-  routeLogger: slogger.createRollingFileLogger(pathOpts);
-  errorLogger: slogger.createRollingFileLogger(errorOpts);
-}
+  routeLogger: slogger.createRollingFileLogger(pathOpts),
+  errorLogger: slogger.createRollingFileLogger(errorOpts),
+};

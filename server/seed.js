@@ -54,7 +54,7 @@ const addUsers = async () => {
   for (const dept in rollToDept) {
     const depUsers = [];
     for (const sem in semesterMap) {
-      for (let i = 1; i <= 60; ++i) {
+      for (let i = 1; i <= 30; ++i) {
         let srNo = i.toString();
         srNo = srNo.length === 1 ? '0' + srNo : srNo;
         const rollNo = dept + '0' + sem + srNo;
@@ -132,87 +132,97 @@ const addPayments = async () => {
   console.log('Added Payments');
 };
 
-const assignEvents = async () => {
-  console.log('Started assigning events');
-  const startTime = new Date();
-  for await (const currEvent of Event.find()) {
-    const {
-      day,
-      maxSeats,
-      category,
-      teamSize,
-      entryFee,
-      isTeamSizeStrict,
-    } = currEvent;
+const linkEvents = async () => {
+  try {
+    if ((await Team.countDocuments()) > 0) {
+      console.log('Teams already linked');
+      return;
+    }
+    console.log('Started assigning events');
+    const startTime = new Date();
+    for await (const currEvent of Event.find()) {
+      const {
+        day,
+        maxSeats,
+        category,
+        teamSize,
+        entryFee,
+        isTeamSizeStrict,
+      } = currEvent;
 
-    if (teamSize === 1) {
-      const howMany = maxSeats;
-      const users = await User.aggregate().sample(howMany).exec();
-
-      await Promise.all(
-        users.map(async user => {
-          await User.findByIdAndUpdate(user._id, {
-            [`criteria.${category}`]: true,
-            [`criteria.${day}`]: true,
-            $inc: { moneyOwed: entryFee },
-            $push: { events: currEvent._id },
-          });
-
-          await Event.findByIdAndUpdate(currEvent._id, {
-            $inc: { seats: 1 },
-            $push: { registered: user._id },
-          });
-        })
-      );
-    } else {
-      const alreadyHere = new Set();
-      async function getUser() {
-        let user = null;
-        do {
-          user = (await User.aggregate().sample(1).exec())[0];
-        } while (alreadyHere.has(user.rollNo));
-        return user;
-      }
-
-      const actualSize = teamSize;
-      const howMany = maxSeats;
-
-      for (let i = 0; i < howMany; ++i) {
-        const users = await Promise.all(
-          [...Array(actualSize)].map(async () => await getUser())
-        );
-        const memberRollNos = users.map(({ rollNo }) => rollNo);
-
-        const team = new Team({
-          memberRollNos,
-          name: faker.lorem.words(2),
-        });
-        const savedTeam = await team.save();
-
-        await Event.findByIdAndUpdate(currEvent._id, {
-          $inc: { seats: 1 },
-          $push: { registered: savedTeam._id },
-        });
+      if (teamSize === 1) {
+        const howMany = randomNumber(Math.floor(maxSeats / 2), maxSeats);
+        const users = await User.aggregate().sample(howMany).exec();
 
         await Promise.all(
-          users.map(async ({ _id }) => {
-            await User.findByIdAndUpdate(_id, {
+          users.map(async user => {
+            await User.findByIdAndUpdate(user._id, {
               [`criteria.${category}`]: true,
               [`criteria.${day}`]: true,
               $inc: { moneyOwed: entryFee },
               $push: { events: currEvent._id },
             });
+
+            await Event.findByIdAndUpdate(currEvent._id, {
+              $inc: { seats: 1 },
+              $push: { registered: user._id },
+            });
           })
         );
+      } else {
+        const alreadyHere = new Set();
+        async function getUser() {
+          let user = null;
+          do {
+            user = (await User.aggregate().sample(1).exec())[0];
+          } while (alreadyHere.has(user.rollNo));
+          return user;
+        }
+
+        const actualSize = isTeamSizeStrict
+          ? randomNumber(Math.floor(teamSize / 2), teamSize)
+          : teamSize;
+        const howMany = randomNumber(Math.floor(maxSeats / 2), maxSeats);
+
+        for (let i = 0; i < howMany; ++i) {
+          const users = await Promise.all(
+            [...Array(actualSize)].map(async () => await getUser())
+          );
+          const memberRollNos = users.map(({ rollNo }) => rollNo);
+
+          const team = new Team({
+            memberRollNos,
+            name: faker.lorem.words(2),
+          });
+          const savedTeam = await team.save();
+
+          await Event.findByIdAndUpdate(currEvent._id, {
+            $inc: { seats: 1 },
+            $push: { registered: savedTeam._id },
+          });
+
+          await Promise.all(
+            users.map(async ({ _id }) => {
+              await User.findByIdAndUpdate(_id, {
+                [`criteria.${category}`]: true,
+                [`criteria.${day}`]: true,
+                $inc: { moneyOwed: entryFee },
+                $push: { events: currEvent._id },
+              });
+            })
+          );
+        }
       }
     }
+    const endTime = new Date();
+    console.log(
+      'Completed assigning events',
+      (endTime - startTime) / 1000,
+      'secs'
+    );
+  } catch (err) {
+    console.log(err);
   }
-  const endTime = new Date();
-  console.log(
-    'Completed assigning events',
-    (endTime - startTime) / 1000,
-    'secs'
-  );
 };
 
 (async () => {
@@ -220,5 +230,5 @@ const assignEvents = async () => {
   await addUsers();
   await addEvents();
   await addPayments();
-  // await assignEvents();
+  await linkEvents();
 })();
