@@ -176,7 +176,7 @@ router.get('/pages/:day', async (req, res) => {
     const day = req.params.day;
     const events = await Event.find(
       { day },
-      '-_id eventCode seats maxSeats start title isSeminar category'
+      '-_id eventCode seats maxSeats start title isSeminar category teamSize'
     );
     res.send({
       data: events,

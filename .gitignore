@@ -3,6 +3,9 @@
 server/node_modules
 server/.env
 
+server/logs/*/*.log
+server/templates/*.pdf
+
 ## WEB
 
 web/.eslintcache

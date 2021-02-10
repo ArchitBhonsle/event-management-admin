@@ -1,6 +1,6 @@
 import { Text, Grid, Heading, HStack } from '@chakra-ui/react';
 
-import { MdPersonOutline } from 'react-icons/md';
+import { MdPeopleOutline, MdPersonOutline } from 'react-icons/md';
 
 import useModeColors from '../hooks/useModeColors';
 import parseEventTime from '../utils/parseEventTime';
@@ -20,6 +20,7 @@ export default function EventCard({
     maxSeats = 10,
     category = 'C',
     isSeminar = true,
+    teamSize,
   },
   setEditEvent,
   editEventOnOpen,
@@ -53,7 +54,7 @@ export default function EventCard({
         </Text>
       </HStack>
       <HStack alignItems='center' justifySelf='flex-end' spacing={1}>
-        <MdPersonOutline />
+        {teamSize === 1 ? <MdPersonOutline /> : <MdPeopleOutline />}
         <Text>
           {seats}/{maxSeats}
         </Text>
