@@ -247,4 +247,5 @@ const linkEvents = async () => {
   await addEvents();
   await addPayments();
   await linkEvents();
+  mongoose.connection.close();
 })();
