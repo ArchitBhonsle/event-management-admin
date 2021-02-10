@@ -223,7 +223,13 @@ const linkEvents = async () => {
                 [`criteria.${category}`]: true,
                 [`criteria.${day}`]: true,
                 $inc: { moneyOwed: entryFee },
-                $push: { events: currEvent._id },
+                $push: {
+                  events: currEvent._id,
+                  eventTeams: {
+                    eventid: currEvent._id,
+                    teamid: savedTeam._id,
+                  },
+                },
               });
             })
           );
