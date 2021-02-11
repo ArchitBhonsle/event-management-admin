@@ -194,7 +194,7 @@ router.delete('/event', async (req, res) => {
     // for the given user delete this event
     // if it's a team event delete the whole team
     // and remove event from each member
-    // remember to update criteria properly
+    // do not worry about criteria
   } catch (err) {
     errorLogger.error(err);
     res.status(500).send({
