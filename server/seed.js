@@ -249,7 +249,7 @@ const linkEvents = async () => {
 
 (async () => {
   await addAdmin();
-  await addUsers();
+  // await addUsers();
   await addEvents();
   await addPayments();
   await linkEvents();

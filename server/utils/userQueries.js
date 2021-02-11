@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const Event = require('../models/event');
 const Payment = require('../models/payment');
+const rollToDept = require('./rollToDept');
 
 module.exports = {
   deleteUser: rollNo => {
@@ -43,7 +44,7 @@ module.exports = {
   generateUser: (name, email) => {
     const regex = new RegExp('9' ? '^' + '9' : '', 'i');
     let lastRoll = 0;
-    (async () => {
+    return (async () => {
       await User.find({ rollNo: regex })
         .exec()
         .then(docs => {
@@ -56,11 +57,25 @@ module.exports = {
         email: email,
         rollNo: lastRoll + 1,
         department: 'OTHER',
-        password: 'abcd',
+        // password: 'abcd',
         tokens: [],
       });
       await newUser.save();
-      console.log(lastRoll);
+      return newUser;
+      // console.log(lastRoll);
     })();
   },
+  generateUserR: (rollNo, email) => {
+    return (async () => {
+      const newUser = new User({
+        email: email,
+        rollNo: rollNo,
+        department: rollToDept[rollNo[0]],
+        // password: 'abcd',
+        tokens: [],
+      });
+      await newUser.save();
+      return newUser;
+    })();
+  }
 };

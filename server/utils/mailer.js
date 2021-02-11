@@ -22,6 +22,9 @@ module.exports = async (email, rollNo) => {
     tls: {
       ciphers: 'SSLv3',
     },
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 3,
   });
 
   await trasporter.sendMail({
