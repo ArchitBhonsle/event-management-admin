@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   department: {
     type: String,
     index: true,
-    required: true,
+    // required: true,
     trim: true,
     uppercase: true,
     enum: ['COMPS', 'ELEC', 'EXTC', 'IT', 'MECH', 'OTHER'],
