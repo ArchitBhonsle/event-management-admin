@@ -190,11 +190,15 @@ router.put('/criteria', async (req, res) => {
 
 router.delete('/event', async (req, res) => {
   try {
-    const { rollNo, event } = req.body;
+    const { rollNo, eventCode } = req.body;
     // for the given user delete this event
     // if it's a team event delete the whole team
     // and remove event from each member
     // do not worry about criteria
+    res.status(200).send({
+      data: true,
+      error: null,
+    });
   } catch (err) {
     errorLogger.error(err);
     res.status(500).send({

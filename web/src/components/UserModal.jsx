@@ -6,6 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  Box,
   Grid,
   Heading,
   HStack,
@@ -31,7 +32,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { Fragment, useRef, useState } from 'react';
-import { MdCheckCircle, MdCancel } from 'react-icons/md';
+import { MdCheckCircle, MdCancel, MdRemoveCircle } from 'react-icons/md';
 import useSWR, { mutate } from 'swr';
 import useModeColors from '../hooks/useModeColors';
 import createToastOptions from '../utils/createToastOptions';
@@ -131,7 +132,8 @@ const tableFields = [
 
 function ModalDisplay({ user }) {
   const { red, green } = useModeColors();
-
+  const [eventToDel, setEventToDel] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const table = tableFields.map(([key, val]) => [val, user[key]]);
 
   function tableRow(key, val) {
@@ -211,14 +213,92 @@ function ModalDisplay({ user }) {
         <Tbody>
           {user.events.map(({ eventCode, start, end, entryFee }) => (
             <Tr key={eventCode}>
-              <Td>{eventCode}</Td>
+              <Td>
+                <HStack>
+                  <Box
+                    cursor='pointer'
+                    _hover={{
+                      color: red,
+                    }}
+                    onClick={() => {
+                      setEventToDel(eventCode);
+                      onOpen();
+                    }}
+                  >
+                    <MdRemoveCircle />
+                  </Box>
+                  <Box>{eventCode}</Box>
+                </HStack>
+              </Td>
               <Td>{start + ' ' + end}</Td>
               <Td isNumeric>{'₹ ' + entryFee}</Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+      {eventToDel && (
+        <DeleteEventConfirmation
+          rollNo={user.rollNo}
+          eventCode={eventToDel}
+          setEventCode={setEventToDel}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      )}
     </>
+  );
+}
+
+function DeleteEventConfirmation({
+  rollNo,
+  eventCode,
+  setEventCode,
+  isOpen,
+  onClose,
+}) {
+  const cancelRef = useRef();
+
+  return (
+    <AlertDialog
+      isOpen={isOpen}
+      leastDestructiveRef={cancelRef}
+      onClose={onClose}
+    >
+      <AlertDialogOverlay>
+        <AlertDialogContent>
+          <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+            Delete Event
+          </AlertDialogHeader>
+
+          <AlertDialogBody>
+            Are you sure you want to remove {eventCode} from {rollNo}?
+          </AlertDialogBody>
+
+          <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme='red'
+              onClick={() => {
+                const { error } = easyFetch(
+                  'users/event',
+                  { rollNo, eventCode },
+                  'DELETE'
+                );
+                if (!error) {
+                  setEventCode(null);
+                  onClose();
+                }
+              }}
+              ml={2}
+            >
+              Delete
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialogOverlay>
+    </AlertDialog>
   );
 }
 
