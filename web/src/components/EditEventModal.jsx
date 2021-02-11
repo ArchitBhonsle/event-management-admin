@@ -85,7 +85,7 @@ export default function EditEventModal({
     createToastOptions('Event successfully editted')
   );
   const failedToast = useToast(
-    createToastOptions('Editting event failed', 'error')
+    createToastOptions('Editing event failed', 'error')
   );
 
   const { data, error } = useSWR(`events/${editEvent}`);

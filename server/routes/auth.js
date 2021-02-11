@@ -23,6 +23,7 @@ router.post('/login', async (req, res) => {
         data: null,
         error: [{ field: 'password', message: 'incorrect password' }],
       });
+      return;
     }
     req.session.username = doc.username;
     res.send({

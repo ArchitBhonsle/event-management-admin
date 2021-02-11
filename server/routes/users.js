@@ -70,6 +70,7 @@ router.post('/', async (req, res) => {
         .select('-_id rollNo')
         .exec();
       rollNo = (parseInt(maxRollNo) + 1).toString();
+      rollNo = rollNo[0] === '9' ? rollNo : '900000';
     } else if (!/^[12345]\d{5,6}$/.test(rollNo)) {
       res.send({
         data: null,
