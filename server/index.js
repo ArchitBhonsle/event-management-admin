@@ -52,6 +52,12 @@ app.use(
   })
 );
 
+require('./models/admin');
+require('./models/event');
+require('./models/payment');
+require('./models/team');
+require('./models/user');
+
 app.use(express.json());
 
 app.use(routeLogger);
