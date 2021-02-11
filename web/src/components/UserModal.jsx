@@ -32,7 +32,7 @@ import {
 } from '@chakra-ui/react';
 import { Fragment, useRef, useState } from 'react';
 import { MdCheckCircle, MdCancel } from 'react-icons/md';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import useModeColors from '../hooks/useModeColors';
 import createToastOptions from '../utils/createToastOptions';
 
@@ -150,7 +150,21 @@ function ModalDisplay({ user }) {
           <Text fontWeight='bold'>{key}</Text>
           <HStack spacing={6}>
             {Object.entries(val).map(([crit, state]) => (
-              <HStack alignItems='center' key={crit}>
+              <HStack
+                alignItems='center'
+                key={crit}
+                cursor='pointer'
+                onDoubleClick={async () => {
+                  const { error } = easyFetch(
+                    'users/criteria',
+                    { rollNo: user.rollNo, criteria: crit },
+                    'PUT'
+                  );
+                  if (!error) {
+                    await mutate(`users/${user.rollNo}`);
+                  }
+                }}
+              >
                 <Text color={state ? green : red}>
                   {state ? (
                     <MdCheckCircle size='1.25rem' />

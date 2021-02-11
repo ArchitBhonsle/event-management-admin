@@ -167,6 +167,43 @@ router.get('/report', async (req, res) => {
   }
 });
 
+router.put('/criteria', async (req, res) => {
+  try {
+    const { rollNo, criteria } = req.body;
+
+    const user = await User.findOne({ rollNo });
+    user.criteria[criteria] = !user.criteria[criteria];
+    await user.save();
+
+    res.status(200).send({
+      data: true,
+      error: null,
+    });
+  } catch (err) {
+    errorLogger.error(err);
+    res.status(500).send({
+      data: null,
+      error: 'something went wrong',
+    });
+  }
+});
+
+router.delete('/event', async (req, res) => {
+  try {
+    const { rollNo, event } = req.body;
+    // for the given user delete this event
+    // if it's a team event delete the whole team
+    // and remove event from each member
+    // remember to update criteria properly
+  } catch (err) {
+    errorLogger.error(err);
+    res.status(500).send({
+      data: null,
+      error: 'something went wrong',
+    });
+  }
+});
+
 router.get('/:rollNo', async (req, res) => {
   try {
     const rollNo = req.params.rollNo;
