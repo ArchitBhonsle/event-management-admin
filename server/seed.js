@@ -218,11 +218,11 @@ const linkEvents = async () => {
           });
 
           await Promise.all(
-            users.map(async ({ _id }) => {
+            users.map(async ({ _id }, ind) => {
               await User.findByIdAndUpdate(_id, {
                 [`criteria.${category}`]: true,
                 [`criteria.${day}`]: true,
-                $inc: { moneyOwed: entryFee },
+                $inc: { moneyOwed: ind === 0 ? 0 : entryFee },
                 $push: {
                   events: currEvent._id,
                   eventTeams: {
