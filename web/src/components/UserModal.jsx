@@ -125,6 +125,7 @@ export default function UserModal({
 const tableFields = [
   ['name', 'Name'],
   ['email', 'Email'],
+  ['phoneNo', 'Phone'],
   ['department', 'Department'],
   ['moneyOwed', 'Money Owed'],
   ['criteria', 'Criteria'],
