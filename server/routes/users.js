@@ -12,7 +12,6 @@ const fs = require('fs');
 const { errorLogger } = require('../utils/logger');
 const Team = require('../models/team');
 const Event = require('../models/event');
-const { RSA_NO_PADDING } = require('constants');
 const templatesPath = path.resolve(__dirname, '../templates');
 const userReport = fs.readFileSync(
   path.resolve(templatesPath, 'user-report.html'),
@@ -194,33 +193,32 @@ router.put('/criteria', async (req, res) => {
 router.delete('/event', async (req, res) => {
   try {
     const { rollNo, eventCode } = req.body;
-    
+
     const user = await User.findOne({ rollNo });
     const event = await Event.findOne({ eventCode: eventCode });
-    
-    if(event.teamSize === 1) {
+
+    if (event.teamSize === 1) {
       user.events.pull(event._id);
       event.registered.pull(user._id);
       event.seats--;
       await user.save();
       await event.save();
     } else {
-      const userTeam = user.eventTeams
-      .filter((e) => {
+      const userTeam = user.eventTeams.filter(e => {
         return String(e.eventid) == String(event._id);
       });
       const teamId = userTeam[0].teamid;
       const team = await Team.findById(teamId);
-      
-      for(let i = 0; i < team.memberRollNos.length; ++i) {
+
+      for (let i = 0; i < team.memberRollNos.length; ++i) {
         const u = await User.findOne({ rollNo: team.memberRollNos[i] });
-        u.eventTeams = u.eventTeams.filter((e) => {
+        u.eventTeams = u.eventTeams.filter(e => {
           return String(e.eventid) != String(event._id);
         });
-        
+
         u.events.pull(event._id);
         event.registered.pull(teamId);
-        
+
         await u.save();
         await event.save();
       }

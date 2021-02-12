@@ -280,8 +280,8 @@ function DeleteEventConfirmation({
             </Button>
             <Button
               colorScheme='red'
-              onClick={() => {
-                const { error } = easyFetch(
+              onClick={async () => {
+                const { error } = await easyFetch(
                   'users/event',
                   { rollNo, eventCode },
                   'DELETE'
@@ -290,6 +290,7 @@ function DeleteEventConfirmation({
                   setEventCode(null);
                   onClose();
                 }
+                await mutate(`users/${rollNo}`);
               }}
               ml={2}
             >
@@ -348,7 +349,7 @@ function PaidConfirmation({
                 const { data } = await makePayment(rollNo, amount);
                 if (data) successToast();
                 else failedToast();
-                await mutate();
+                await mutate(`users/${rollNo}`);
                 onClose();
                 userModalOnClose();
                 setRollNo(null);
