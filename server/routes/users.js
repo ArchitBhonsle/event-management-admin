@@ -10,8 +10,9 @@ const path = require('path');
 const pdf = require('pdf-creator-node');
 const fs = require('fs');
 const { errorLogger } = require('../utils/logger');
-const { events } = require('../models/admin');
 const Team = require('../models/team');
+const Event = require('../models/event');
+const { RSA_NO_PADDING } = require('constants');
 const templatesPath = path.resolve(__dirname, '../templates');
 const userReport = fs.readFileSync(
   path.resolve(templatesPath, 'user-report.html'),
@@ -196,7 +197,7 @@ router.delete('/event', async (req, res) => {
     
     const user = await User.findOne({ rollNo });
     const event = await Event.findOne({ eventCode: eventCode });
-
+    
     if(event.teamSize === 1) {
       user.events.pull(event._id);
       event.registered.pull(user._id);
@@ -205,20 +206,26 @@ router.delete('/event', async (req, res) => {
       await event.save();
     } else {
       const userTeam = user.eventTeams
-        .filter(({ eventid }) => {
-          eventid === event._id;
-        });
-      const id = userTeam._id;
-      const team = Team.findOne({ _id: id });
-
+      .filter((e) => {
+        return String(e.eventid) == String(event._id);
+      });
+      const teamId = userTeam[0].teamid;
+      const team = await Team.findById(teamId);
+      
       for(let i = 0; i < team.memberRollNos.length; ++i) {
         const u = await User.findOne({ rollNo: team.memberRollNos[i] });
+        u.eventTeams = u.eventTeams.filter((e) => {
+          return String(e.eventid) != String(event._id);
+        });
+        
         u.events.pull(event._id);
-        event.registered.pull(user._id);
-        event.seats--;
-        await user.save();
+        event.registered.pull(teamId);
+        
+        await u.save();
         await event.save();
       }
+      event.seats--;
+      await event.save();
     }
     // for the given user delete this event
     // if it's a team event delete the whole team
