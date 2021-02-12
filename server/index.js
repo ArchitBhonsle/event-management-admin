@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const session = require('express-session');
@@ -18,7 +19,8 @@ const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
   port = process.env.PORT || 4000,
   dbCollection = process.env.DB_NAME || 'etamax-admin',
   mongoURL = `mongodb://localhost/${dbCollection}`,
-  sessionSecret = process.env.SESSION || 'etamin';
+  sessionSecret = process.env.SESSION || 'etamin',
+  prod = process.env.PROD || false;
 
 mongoose.connect(mongoURL, {
   useNewUrlParser: true,
@@ -26,6 +28,8 @@ mongoose.connect(mongoURL, {
   useCreateIndex: true,
   useFindAndModify: false,
 });
+
+app.use(helmet());
 
 app.use(
   cors({
@@ -42,7 +46,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: prod,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
     },
