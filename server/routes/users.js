@@ -200,6 +200,7 @@ router.delete('/event', async (req, res) => {
     
     if(event.teamSize === 1) {
       user.events.pull(event._id);
+      user.moneyOwed -= event.entryFee;
       event.registered.pull(user._id);
       event.seats--;
       await user.save();
@@ -218,6 +219,7 @@ router.delete('/event', async (req, res) => {
           return String(e.eventid) != String(event._id);
         });
         
+        if(i === 0) u.moneyOwed -= event.entryFee;
         u.events.pull(event._id);
         event.registered.pull(teamId);
         
