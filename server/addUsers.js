@@ -17,7 +17,6 @@ mongoose.connect(mongoURL, {
 
 (async () => {
   try {
-
     const [, , file] = process.argv;
     
     await fs
@@ -25,6 +24,7 @@ mongoose.connect(mongoURL, {
     .pipe(csv())
     .on('data', async (data) => {
       try {
+        console.log(await User.findOne({rollNo: data.roll}));
         const user = await userQueries.generateUserR(data.roll, data.email);
         const password = await mailer(data.email, data.roll);
         User.register(user, password);

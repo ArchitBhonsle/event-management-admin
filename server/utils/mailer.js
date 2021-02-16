@@ -24,7 +24,7 @@ module.exports = async (email, rollNo) => {
     },
     pool: true,
     maxConnections: 3,
-    maxMessages: 3,
+    maxMessages: 1,
   });
 
   await trasporter.sendMail({
