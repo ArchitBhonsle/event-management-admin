@@ -201,6 +201,19 @@ router.delete('/event', async (req, res) => {
       user.events.pull(event._id);
       user.moneyOwed -= event.entryFee;
       event.registered.pull(user._id);
+      user.criteria = {
+        '1': false,
+        '2': false,
+        '3': false,
+        C: false,
+        T: false,
+        F: false,
+      };
+      await user.execPopulate({ path: 'events', select: '-_id day category' });
+      user.events.forEach(({ day, category }) => {
+        user.criteria[String(day)] = true;
+        user.criteria[category] = true;
+      });
       event.seats--;
       await user.save();
       await event.save();
@@ -217,9 +230,22 @@ router.delete('/event', async (req, res) => {
           return String(e.eventid) != String(event._id);
         });
 
-        if(i === 0) u.moneyOwed -= event.entryFee;
+        if (i === 0) u.moneyOwed -= event.entryFee;
 
         u.events.pull(event._id);
+        u.criteria = {
+          '1': false,
+          '2': false,
+          '3': false,
+          C: false,
+          T: false,
+          F: false,
+        };
+        await u.execPopulate({ path: 'events', select: '-_id day category' });
+        u.events.forEach(({ day, category }) => {
+          u.criteria[String(day)] = true;
+          u.criteria[category] = true;
+        });
         event.registered.pull(teamId);
 
         await u.save();
@@ -251,7 +277,7 @@ router.get('/:rollNo', async (req, res) => {
 
     const user = await User.findOne(
       { rollNo },
-      '-_id rollNo criteria moneyOwed department name email events'
+      '-_id rollNo criteria moneyOwed department name email events phoneNo'
     ).populate('events', '-_id eventCode start end entryFee');
 
     res.send({
