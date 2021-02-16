@@ -25,6 +25,7 @@ export default function AddUserModal({
   finalFocusRef,
   mutate,
 }) {
+  const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState({
     rollNo: '',
     email: '',
@@ -84,12 +85,15 @@ export default function AddUserModal({
         <ModalFooter>
           <Button
             colorScheme='green'
+            isLoading={loading}
             onClick={async () => {
+              setLoading(true);
               const { error } = await easyFetch('users', fields);
               if (error) {
                 setErrors(error);
               } else {
                 mutate();
+                setLoading(false);
                 onClose();
               }
             }}
