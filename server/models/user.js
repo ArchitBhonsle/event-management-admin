@@ -64,7 +64,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: /^.{1,100}$/,
   },
-  phoneNo: {
+  phoneNumber: {
     type: String,
     trim: true,
     validate: /^\d{10}$/,

@@ -286,7 +286,7 @@ router.get('/:rollNo', async (req, res) => {
 
     const user = await User.findOne(
       { rollNo },
-      '-_id rollNo criteria moneyOwed department name email events phoneNo'
+      '-_id rollNo criteria moneyOwed department name email events phoneNumber'
     ).populate('events', '-_id eventCode start end entryFee');
 
     res.send({
