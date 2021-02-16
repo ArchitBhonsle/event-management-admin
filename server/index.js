@@ -20,7 +20,7 @@ const clientURL = process.env.CLIENT_URL || 'http://localhost:3000',
   dbCollection = process.env.DB_NAME || 'etamax-admin',
   mongoURL = `mongodb://localhost/${dbCollection}`,
   sessionSecret = process.env.SESSION || 'etamin',
-  prod = process.env.PROD || false;
+  prod = process.env.PROD ? true : false;
 
 mongoose.connect(mongoURL, {
   useNewUrlParser: true,
@@ -46,8 +46,8 @@ app.use(
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure: prod,
-      sameSite: 'lax',
+      secure: false,
+      sameSite: prod ? 'strict' : 'lax',
       maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
     },
     store: new MongoStore({
