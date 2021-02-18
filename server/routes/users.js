@@ -99,7 +99,6 @@ router.post('/', async (req, res) => {
     const user = new User({
       email,
       rollNo,
-      password,
       department: rollToDept[rollNo[0]],
     });
     await User.register(user, password);
