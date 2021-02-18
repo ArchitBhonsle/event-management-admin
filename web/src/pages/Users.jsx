@@ -60,6 +60,8 @@ export default function Users() {
     usersList = <Error />;
   } else if (!data) {
     usersList = <Loading />;
+  } else if (data.error) {
+    usersList = <Error error={data.error} />;
   } else {
     usersList = (
       <>

@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
       .select('-_id rollNo criteria moneyOwed department name')
       .exec();
     const maxPage = Math.ceil(
-      (await User.estimatedDocumentCount({ rollNo: regex })) / pageLimit
+      (await User.countDocuments({ rollNo: regex })) / pageLimit
     );
 
     res.send({
@@ -65,7 +65,6 @@ router.post('/', async (req, res) => {
       });
       return;
     }
-
     if (!rollNo) {
       const { rollNo: maxRollNo } = await User.findOne({})
         .sort('-rollNo')
@@ -77,21 +76,31 @@ router.post('/', async (req, res) => {
       res.send({
         data: null,
         error: {
-          rollNo: 'email not valid',
+          rollNo: 'roll number not valid',
         },
       });
       return;
-    } else {
-      const user = await User.findOne({ rollNo });
-      if (user) {
-        res.send({
-          data: null,
-          error: {
-            rollNo: 'roll number already taken',
-          },
-        });
-        return;
-      }
+    }
+
+    const userRollNo = await User.findOne({ rollNo });
+    if (userRollNo) {
+      res.send({
+        data: null,
+        error: {
+          rollNo: 'roll number already taken',
+        },
+      });
+      return;
+    }
+    const userEmail = await User.findOne({ email });
+    if (userEmail) {
+      res.send({
+        data: null,
+        error: {
+          email: 'email already taken',
+        },
+      });
+      return;
     }
 
     const password = await mailer(email, rollNo);
@@ -276,7 +285,7 @@ router.get('/:rollNo', async (req, res) => {
 
     const user = await User.findOne(
       { rollNo },
-      '-_id rollNo criteria moneyOwed department name email events phoneNo'
+      '-_id rollNo criteria moneyOwed department name email events phoneNumber'
     ).populate('events', '-_id eventCode start end entryFee');
 
     res.send({
