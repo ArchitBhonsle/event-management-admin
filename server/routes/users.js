@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
   try {
     let { rollNo, email } = req.body;
 
-    const criteria = {
+    let criteria = {
       '1': false,
       '2': false,
       '3': false,
