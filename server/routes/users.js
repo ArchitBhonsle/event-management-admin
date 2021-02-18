@@ -56,6 +56,14 @@ router.post('/', async (req, res) => {
   try {
     let { rollNo, email } = req.body;
 
+    const criteria = {
+      '1': false,
+      '2': false,
+      '3': false,
+      C: false,
+      T: false,
+      F: false,
+    };
     if (!validator.isEmail(email)) {
       res.send({
         data: null,
@@ -72,6 +80,15 @@ router.post('/', async (req, res) => {
         .exec();
       rollNo = (parseInt(maxRollNo) + 1).toString();
       rollNo = rollNo[0] === '9' ? rollNo : '900000';
+
+      criteria = {
+        '1': true,
+        '2': true,
+        '3': true,
+        C: true,
+        T: true,
+        F: true,
+      };
     } else if (!/^[12345]\d{5,6}$/.test(rollNo)) {
       res.send({
         data: null,
@@ -108,6 +125,7 @@ router.post('/', async (req, res) => {
     const user = new User({
       email,
       rollNo,
+      criteria,
       department: rollToDept[rollNo[0]],
     });
     await User.register(user, password);
@@ -262,10 +280,7 @@ router.delete('/event', async (req, res) => {
       event.seats--;
       await event.save();
     }
-    // for the given user delete this event
-    // if it's a team event delete the whole team
-    // and remove event from each member
-    // do not worry about criteria
+
     res.status(200).send({
       data: true,
       error: null,
