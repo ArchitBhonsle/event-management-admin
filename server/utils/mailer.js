@@ -33,12 +33,16 @@ module.exports = async (email, rollNo) => {
     subject: 'Login and password for Etamax 2021',
     html:
       `<h1>Etamax 2021</h1>` +
-      `<p>Your identification number is <strong> ${rollNo} </strong> </p>` +
-      `<p>And the password is <strong> ${password} </strong> </p>` +
-      `<hr>` +
       `<p>
-      Lorem ipsum dolor sit <a style="color:inherit;font-style:oblique;text-decoration:none;pointer-events:none;" href="http://bit.do/puipuirollpui" target="_blank">hello</a> amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>`,
+      Dearest Agnelites, <br>
+
+      Hope all of you have been safe and having a blast. ✨<a style="color:inherit;text-decoration:none;pointer-events:none;" href="http://bit.do/puipuirollpui" target="_blank">🤩</a>
+      As the dates of etamax are closing by the registrations will be starting.
+      The username and password has been provided below. Start registering for the events of your choice. 🔥😇 
+      </p>` +
+      `<hr>` +
+      `<p>Your identification number is <strong> ${rollNo} </strong> </p>` +
+      `<p>And the password is <strong> ${password} </strong> </p>`,
   });
 
   return password;
