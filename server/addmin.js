@@ -19,7 +19,10 @@ mongoose.connect(mongoURL, {
     const find = await Admin.findOne({ username });
 
     if (find) {
-      throw Error('Admin with the username already exists');
+      find.password = await argon2.hash(password);
+      await find.save();
+      console.log('Password changed');
+      return;
     }
     const newAdmin = new Admin({
       username: username,
