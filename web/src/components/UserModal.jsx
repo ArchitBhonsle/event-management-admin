@@ -158,7 +158,7 @@ function ModalDisplay({ user }) {
                 key={crit}
                 cursor='pointer'
                 onDoubleClick={async () => {
-                  const { error } = easyFetch(
+                  const { error } = await easyFetch(
                     'users/criteria',
                     { rollNo: user.rollNo, criteria: crit },
                     'PUT'
@@ -212,8 +212,8 @@ function ModalDisplay({ user }) {
           </Tr>
         </Thead>
         <Tbody>
-          {user.events.map(({ eventCode, start, end, entryFee }) => (
-            <Tr key={eventCode}>
+          {user.events.map(({ eventCode, start, end, entryFee }, ind) => (
+            <Tr key={ind}>
               <Td>
                 <HStack>
                   <Box
