@@ -18,11 +18,15 @@ export default function EventPanel({ day, setEditEvent, editEventOnOpen }) {
     eventList = (
       <Grid
         gridTemplateColumns={{
-          base: '1fr',
-          md: 'repeat(2, 1fr)',
-          xl: 'repeat(3, 1fr)',
+          base: '100%',
+          md: '49% 49%',
+          xl: '32% 32% 32%',
         }}
-        gap={4}
+        columnGap={{
+          md: '2%',
+          xl: '1%',
+        }}
+        rowGap={4}
         w='100%'
       >
         {data.data.map((event, ind) => (

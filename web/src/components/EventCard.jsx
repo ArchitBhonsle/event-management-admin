@@ -13,13 +13,13 @@ const categoryToEmojiMap = {
 
 export default function EventCard({
   event: {
-    eventCode = 'CODE',
-    title = 'Mock Event',
-    start = '1-12:00',
-    seats = 4,
-    maxSeats = 10,
-    category = 'C',
-    isSeminar = true,
+    eventCode,
+    title,
+    start,
+    seats,
+    maxSeats,
+    category,
+    isSeminar,
     teamSize,
   },
   setEditEvent,
@@ -33,10 +33,11 @@ export default function EventCard({
       w='100%'
       borderWidth='2px'
       borderRadius='lg'
-      gridTemplateColumns='auto min-content'
+      gridTemplateColumns='80% 18%'
       gridTemplateRows='auto min-content'
       alignItems='center'
-      gap={4}
+      columnGap='2%'
+      rowGap={2}
       _hover={{
         borderColor: green,
       }}
@@ -47,7 +48,14 @@ export default function EventCard({
       }}
     >
       <HStack alignItems='center'>
-        <Heading size='lg'>{eventCode}</Heading>
+        <Heading
+          size='lg'
+          textOverflow='ellipsis'
+          whiteSpace='nowrap'
+          overflow='hidden'
+        >
+          {eventCode}
+        </Heading>
         <Text>
           {categoryToEmojiMap[category]}
           {isSeminar && '🎤'}
