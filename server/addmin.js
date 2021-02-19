@@ -22,6 +22,7 @@ mongoose.connect(mongoURL, {
       find.password = await argon2.hash(password);
       await find.save();
       console.log('Password changed');
+      mongoose.connection.close();
       return;
     }
     const newAdmin = new Admin({

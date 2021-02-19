@@ -74,10 +74,11 @@ router.post('/', async (req, res) => {
       return;
     }
     if (!rollNo) {
-      const { rollNo: maxRollNo } = await User.findOne({})
+      const lastUser = await User.findOne({})
         .sort('-rollNo')
         .select('-_id rollNo')
         .exec();
+      let maxRollNo = lastUser ? lastUser.rollNo : '900000';
       rollNo = (parseInt(maxRollNo) + 1).toString();
       rollNo = rollNo[0] === '9' ? rollNo : '900000';
 
@@ -139,6 +140,7 @@ router.post('/', async (req, res) => {
       data: null,
       error: 'something went wrong',
     });
+    console.log(err);
     errorLogger.error(err);
   }
 });
@@ -260,12 +262,12 @@ router.delete('/event', async (req, res) => {
 
         u.events.pull(event._id);
         u.criteria = {
-          '1': false,
-          '2': false,
-          '3': false,
-          C: false,
-          T: false,
-          F: false,
+          '1': u.rollNo[0] === '9',
+          '2': u.rollNo[0] === '9',
+          '3': u.rollNo[0] === '9',
+          C: u.rollNo[0] === '9',
+          T: u.rollNo[0] === '9',
+          F: u.rollNo[0] === '9',
         };
         await u.execPopulate({ path: 'events', select: '-_id day category' });
         u.events.forEach(({ day, category }) => {
