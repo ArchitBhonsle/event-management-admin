@@ -1,4 +1,4 @@
-import { Text, Grid, Heading, HStack } from '@chakra-ui/react';
+import { Text, Grid, Heading, HStack, Tooltip } from '@chakra-ui/react';
 
 import { MdPeopleOutline, MdPersonOutline } from 'react-icons/md';
 
@@ -48,14 +48,16 @@ export default function EventCard({
       }}
     >
       <HStack alignItems='center'>
-        <Heading
-          size='lg'
-          textOverflow='ellipsis'
-          whiteSpace='nowrap'
-          overflow='hidden'
-        >
-          {eventCode}
-        </Heading>
+        <Tooltip label={eventCode} aria-label={`event code is ${eventCode}`}>
+          <Heading
+            size='lg'
+            textOverflow='ellipsis'
+            whiteSpace='nowrap'
+            overflow='hidden'
+          >
+            {eventCode}
+          </Heading>
+        </Tooltip>
         <Text>
           {categoryToEmojiMap[category]}
           {isSeminar && '🎤'}
