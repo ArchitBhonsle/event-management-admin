@@ -69,7 +69,11 @@ export default function EventCard({
           {seats}/{maxSeats}
         </Text>
       </HStack>
-      <Text>{title}</Text>
+      <Tooltip label={title} aria-label={`title is ${title}`}>
+        <Text textOverflow='ellipsis' whiteSpace='nowrap' overflow='hidden'>
+          {title}
+        </Text>
+      </Tooltip>
       <Text fontSize='sm' justifySelf='flex-end'>
         {parseEventTime(start).time}
       </Text>
