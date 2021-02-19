@@ -228,12 +228,12 @@ router.delete('/event', async (req, res) => {
       user.moneyOwed -= event.entryFee;
       event.registered.pull(user._id);
       user.criteria = {
-        '1': false,
-        '2': false,
-        '3': false,
-        C: false,
-        T: false,
-        F: false,
+        '1': rollNo[0] === '9',
+        '2': rollNo[0] === '9',
+        '3': rollNo[0] === '9',
+        C: rollNo[0] === '9',
+        T: rollNo[0] === '9',
+        F: rollNo[0] === '9',
       };
       await user.execPopulate({ path: 'events', select: '-_id day category' });
       user.events.forEach(({ day, category }) => {
