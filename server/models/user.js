@@ -5,7 +5,6 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    validate: /^[a-zA-Z\']{1,50} [a-zA-Z\']{1,50}$/,
   },
   email: {
     type: String,
