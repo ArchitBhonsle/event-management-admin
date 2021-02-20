@@ -3,7 +3,7 @@ const router = express.Router();
 const isAuth = require('../middleware/isAuth');
 const User = require('../models/user');
 const { default: validator } = require('validator');
-const mailer = require('../utils/mailer');
+const mailer = require('../utils/new_mailer');
 const rollToDept = require('../utils/rollToDept');
 
 const path = require('path');
