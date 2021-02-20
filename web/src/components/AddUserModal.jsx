@@ -89,11 +89,11 @@ export default function AddUserModal({
             onClick={async () => {
               setLoading(true);
               const { error } = await easyFetch('users', fields);
+              setLoading(false);
               if (error) {
                 setErrors(error);
               } else {
                 mutate();
-                setLoading(false);
                 onClose();
               }
             }}

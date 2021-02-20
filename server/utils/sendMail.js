@@ -10,8 +10,8 @@ module.exports = async function (email, rollNo, password) {
     html:
       `<h1>Etamax 2021</h1>` +
       `<p>
-        Dearest Agnelites, <br>
-        Hope all of you have been safe and having a blast. ✨<a style="color:inherit;text-decoration:none;pointer-events:none;" href="http://bit.do/puipuirollpui" target="_blank">🤩</a><br>
+        Dearest Agnelites, <br><br>
+        Hope all of you have been safe and having a blast. ✨<a style="color:inherit;text-decoration:none;pointer-events:none;" href="http://bit.do/puipuirollpui" target="_blank">🤩</a><br><br>
         As the dates of etamax are closing by the registrations will be starting.
         The username and password has been provided below. Start registering for the events of your choice. 🔥😇 
       </p>` +
