@@ -69,7 +69,11 @@ mongoose.connect(mongoURL, {
           `<p>Your identification number is <strong> ${data.roll} </strong> </p>` +
           `<p>And the password is <strong> ${password} </strong> </p>`,
           });
-        user.setPassword(password);
+        try {
+          await User.register(user, password);
+        } catch(err) {
+          await user.setPassword(password);
+        }
         console.log('registered ', data.roll);
       } catch (err) {
         console.log(err);
