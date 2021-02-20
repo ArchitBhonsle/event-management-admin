@@ -66,16 +66,11 @@ module.exports = {
     })();
   },
   generateUserR: (rollNo, email) => {
-    return (async () => {
-      const newUser = new User({
-        email: email,
-        rollNo: rollNo,
-        department: rollToDept[rollNo[0]],
-        // password: 'abcd',
-        tokens: [],
-      });
-      await newUser.save();
-      return newUser;
-    })();
-  }
+    return new User({
+      email: email,
+      rollNo: rollNo,
+      department: rollToDept[rollNo[0]],
+      tokens: [],
+    });
+  },
 };

@@ -34,7 +34,7 @@ mongoose.connect(mongoURL, {
             words[0] + words[1] + randomNumber(100, 999).toString();
 
           await sendMail(data.email, data.roll, password);
-          const user = await userQueries.generateUserR(data.roll, data.email);
+          const user = userQueries.generateUserR(data.roll, data.email);
           await User.register(user, password);
           console.log('registered ', data.roll);
         } catch (err) {
