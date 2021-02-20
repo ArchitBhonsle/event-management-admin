@@ -27,6 +27,7 @@ router.get('/report/:eventCode', async (req, res) => {
     const eventCode = req.params.eventCode;
 
     const event = await Event.findOne({ eventCode });
+    console.log(event);
     if (event.teamSize === 1) {
       await event.execPopulate({
         path: 'registered',
@@ -57,7 +58,7 @@ router.get('/report/:eventCode', async (req, res) => {
       await event.execPopulate({
         path: 'registered',
         model: 'Team',
-        select: '-_id name memberRollNos',
+        select: '-_id teamName memberRollNos',
         options: { lean: true },
         populate: [
           {
@@ -71,9 +72,9 @@ router.get('/report/:eventCode', async (req, res) => {
       const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
 
       const data = [];
-      event.registered.forEach(({ name, members }) => {
+      event.registered.forEach(({ teamName, members }) => {
         data.push({
-          teamName: name,
+          teamName: teamName,
           teamSpan: members.length,
           rollNo: members[0].rollNo,
           name: members[0].name,

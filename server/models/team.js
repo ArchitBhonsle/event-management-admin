@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const teamSchema = new mongoose.Schema({
   memberRollNos: [String],
-  name: {
+  teamName: {
     type: String,
     required: true,
     trim: true,
