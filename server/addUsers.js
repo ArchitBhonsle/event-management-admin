@@ -25,19 +25,23 @@ mongoose.connect(mongoURL, {
     fs.createReadStream(file)
       .pipe(csv())
       .on('data', async data => {
-        const words = rword.generate(2, {
-          length: '3-4',
-          capitalize: 'first',
-        });
-        const password =
-          words[0] + words[1] + randomNumber(100, 999).toString();
+        try {
+          const words = rword.generate(2, {
+            length: '3-4',
+            capitalize: 'first',
+          });
+          const password =
+            words[0] + words[1] + randomNumber(100, 999).toString();
 
-        await sendMail(data.email, data.roll, password);
-        const user = await userQueries.generateUserR(data.roll, data.email);
-        await User.register(user, password);
-        console.log('registered ', data.roll);
+          await sendMail(data.email, data.roll, password);
+          const user = await userQueries.generateUserR(data.roll, data.email);
+          await User.register(user, password);
+          console.log('registered ', data.roll);
+        } catch (err) {
+          console.error(err);
+        }
       });
   } catch (err) {
-    console.log(err);
+    console.err(err);
   }
 })();
