@@ -5,7 +5,7 @@ server/.env
 
 server/logs/*/*.log
 server/templates/*.pdf
-# server/templates/*.csv
+server/templates/*.csv
 
 ## WEB
 
