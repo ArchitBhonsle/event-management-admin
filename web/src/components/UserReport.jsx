@@ -96,7 +96,7 @@ export default function UserReport({ isOpen, onClose, finalFocusRef }) {
                 const uri = `${API_URI}users/report?department=${fields.department}&semester=${fields.semester}`;
                 const res = await fetch(uri, { credentials: 'include' });
                 const blob = await res.blob();
-                download(blob, `${fields.department}_${fields.semester}.pdf`);
+                download(blob, `${fields.department}_${fields.semester}.csv`);
               } catch (err) {
                 console.error(err);
               }

@@ -7,7 +7,6 @@ const isAuth = require('../middleware/isAuth');
 const eventValidation = require('../utils/eventValidation');
 
 const path = require('path');
-const pdf = require('pdf-creator-node');
 const { errorLogger } = require('../utils/logger');
 const templatesPath = path.join(__dirname, '../templates');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;

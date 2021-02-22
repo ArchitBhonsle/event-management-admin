@@ -7,16 +7,11 @@ const mailer = require('../utils/new_mailer');
 const rollToDept = require('../utils/rollToDept');
 
 const path = require('path');
-const pdf = require('pdf-creator-node');
-const fs = require('fs');
 const { errorLogger } = require('../utils/logger');
 const Team = require('../models/team');
 const Event = require('../models/event');
 const templatesPath = path.resolve(__dirname, '../templates');
-const userReport = fs.readFileSync(
-  path.resolve(templatesPath, 'user-report.html'),
-  'utf8'
-);
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 router.use(isAuth);
 
@@ -151,14 +146,13 @@ router.get('/report', async (req, res) => {
 
     let users = await User.find(
       { department, semester },
-      '-_id rollNo name criteria moneyOwed'
+      '-_id rollNo name criteria moneyOwed phoneNumber email'
     )
       .lean()
       .exec();
 
-    users = users.map(({ rollNo, name, criteria, moneyOwed }) => ({
-      rollNo,
-      name,
+    users = users.map(({ criteria, moneyOwed, ...rest }) => ({
+      ...rest,
       criteria: Object.entries(criteria)
         .filter(([, v]) => v === false)
         .map(([k]) => k)
@@ -168,24 +162,22 @@ router.get('/report', async (req, res) => {
 
     const resultPath = path.resolve(
       templatesPath,
-      `${department}_${semester}.pdf`
+      `${department}_${semester}.csv`
     );
 
-    await pdf.create(
-      {
-        html: userReport,
-        data: {
-          department,
-          semester,
-          users,
-        },
-        path: resultPath,
-      },
-      {
-        format: 'A4',
-        orientation: 'portrait',
-      }
-    );
+    const csvWriter = createCsvWriter({
+      path: resultPath,
+      header: [
+        { id: 'rollNo', title: 'ROLLNO' },
+        { id: 'name', title: 'NAME' },
+        { id: 'criteria', title: 'CRTIERIA' },
+        { id: 'moneyOwed', title: 'MONEY' },
+        { id: 'phoneNumber', title: 'PHONE' },
+        { id: 'email', title: 'EMAIL' },
+      ],
+    });
+
+    await csvWriter.writeRecords(users);
 
     res.download(resultPath);
   } catch (err) {
