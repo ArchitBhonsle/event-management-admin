@@ -8,17 +8,9 @@ const eventValidation = require('../utils/eventValidation');
 
 const path = require('path');
 const pdf = require('pdf-creator-node');
-const fs = require('fs');
 const { errorLogger } = require('../utils/logger');
-const templatesPath = path.resolve(__dirname, '../templates');
-const eventReport = fs.readFileSync(
-  path.resolve(templatesPath, 'event-report.html'),
-  'utf8'
-);
-const teamReport = fs.readFileSync(
-  path.resolve(templatesPath, 'team-report.html'),
-  'utf8'
-);
+const templatesPath = path.join(__dirname, '../templates');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 router.use(isAuth);
 
@@ -27,31 +19,26 @@ router.get('/report/:eventCode', async (req, res) => {
     const eventCode = req.params.eventCode;
 
     const event = await Event.findOne({ eventCode });
-    console.log(event);
     if (event.teamSize === 1) {
       await event.execPopulate({
         path: 'registered',
         model: 'User',
-        select: '-_id rollNo name',
+        select: '-_id rollNo name phoneNumber email',
         options: { lean: true },
       });
 
-      const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
+      const resultPath = path.resolve(templatesPath, `event_${eventCode}.csv`);
+      const csvWriter = createCsvWriter({
+        path: resultPath,
+        header: [
+          { id: 'rollNo', title: 'ROLLNO' },
+          { id: 'name', title: 'NAME' },
+          { id: 'phoneNumber', title: 'PHONE' },
+          { id: 'email', title: 'EMAIL' },
+        ],
+      });
 
-      await pdf.create(
-        {
-          html: eventReport,
-          data: {
-            title: event.title,
-            users: event.registered,
-          },
-          path: resultPath,
-        },
-        {
-          format: 'A4',
-          orientation: 'portrait',
-        }
-      );
+      await csvWriter.writeRecords(event.registered);
 
       res.download(resultPath);
     } else {
@@ -63,44 +50,45 @@ router.get('/report/:eventCode', async (req, res) => {
         populate: [
           {
             path: 'members',
-            select: '-_id rollNo name',
+            select: '-_id rollNo name phoneNumber email',
             options: { lean: true },
           },
         ],
       });
 
-      const resultPath = path.resolve(templatesPath, `event_${eventCode}.pdf`);
+      const resultPath = path.resolve(templatesPath, `event_${eventCode}.csv`);
 
       const data = [];
       event.registered.forEach(({ teamName, members }) => {
         data.push({
           teamName: teamName,
-          teamSpan: members.length,
           rollNo: members[0].rollNo,
           name: members[0].name,
+          email: members[0].email,
+          phoneNumber: members[0].phoneNumber,
         });
         members.slice(1).forEach(member => {
           data.push({
             rollNo: member.rollNo,
             name: member.name,
+            email: member.email,
+            phoneNumber: member.phoneNumber,
           });
         });
       });
 
-      await pdf.create(
-        {
-          html: teamReport,
-          data: {
-            title: event.title,
-            data,
-          },
-          path: resultPath,
-        },
-        {
-          format: 'A4',
-          orientation: 'portrait',
-        }
-      );
+      const csvWriter = createCsvWriter({
+        path: resultPath,
+        header: [
+          { id: 'teamName', title: 'TEAM' },
+          { id: 'rollNo', title: 'ROLLNO' },
+          { id: 'name', title: 'NAME' },
+          { id: 'phoneNumber', title: 'PHONE' },
+          { id: 'email', title: 'EMAIL' },
+        ],
+      });
+
+      await csvWriter.writeRecords(data);
 
       res.download(resultPath);
     }

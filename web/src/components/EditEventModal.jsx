@@ -285,7 +285,7 @@ export default function EditEventModal({
                   const uri = `${API_URI}events/report/${editEvent}`;
                   const res = await fetch(uri, { credentials: 'include' });
                   const blob = await res.blob();
-                  download(blob, `event_${editEvent}.pdf`);
+                  download(blob, `event_${editEvent}.csv`);
                 } catch (err) {
                   console.error(err);
                 }
