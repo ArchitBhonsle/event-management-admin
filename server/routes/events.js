@@ -22,7 +22,7 @@ router.get('/report/:eventCode', async (req, res) => {
       await event.execPopulate({
         path: 'registered',
         model: 'User',
-        select: '-_id rollNo name phoneNumber email',
+        select: '-_id rollNo name phoneNumber email moneyOwed',
         options: { lean: true },
       });
 
@@ -34,6 +34,7 @@ router.get('/report/:eventCode', async (req, res) => {
           { id: 'name', title: 'NAME' },
           { id: 'phoneNumber', title: 'PHONE' },
           { id: 'email', title: 'EMAIL' },
+          { id: 'moneyOwed', title: 'MONEY' },
         ],
       });
 
@@ -49,7 +50,7 @@ router.get('/report/:eventCode', async (req, res) => {
         populate: [
           {
             path: 'members',
-            select: '-_id rollNo name phoneNumber email',
+            select: '-_id rollNo name phoneNumber email moneyOwed',
             options: { lean: true },
           },
         ],
@@ -65,6 +66,7 @@ router.get('/report/:eventCode', async (req, res) => {
           name: members[0].name,
           email: members[0].email,
           phoneNumber: members[0].phoneNumber,
+          moneyOwed: members[0].moneyOwed,
         });
         members.slice(1).forEach(member => {
           data.push({
@@ -72,6 +74,7 @@ router.get('/report/:eventCode', async (req, res) => {
             name: member.name,
             email: member.email,
             phoneNumber: member.phoneNumber,
+            moneyOwed: member.moneyOwed,
           });
         });
       });
@@ -84,6 +87,7 @@ router.get('/report/:eventCode', async (req, res) => {
           { id: 'name', title: 'NAME' },
           { id: 'phoneNumber', title: 'PHONE' },
           { id: 'email', title: 'EMAIL' },
+          { id: 'moneyOwed', title: 'MONEY' },
         ],
       });
 
