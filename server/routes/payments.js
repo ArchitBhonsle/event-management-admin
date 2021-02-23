@@ -83,7 +83,7 @@ router.get('/report', async (req, res) => {
       .populate({
         path: 'user',
         model: 'User',
-        select: '-_id rollNo name phoneNumber email',
+        select: '-_id rollNo name phoneNumber email semester department',
         options: { lean: true },
       })
       .exec();
@@ -96,6 +96,8 @@ router.get('/report', async (req, res) => {
         { id: 'name', title: 'NAME' },
         { id: 'amount', title: 'AMOUNT' },
         { id: 'time', title: 'TIME' },
+        { id: 'semester', title: 'SEM' },
+        { id: 'department', title: 'DEPT' },
         { id: 'phoneNumber', title: 'PHONE' },
         { id: 'email', title: 'EMAIL' },
       ],
