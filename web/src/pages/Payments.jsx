@@ -1,7 +1,7 @@
 import { Input, IconButton, Grid, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import { MdSearch } from 'react-icons/md';
+import { MdSearch, MdAssignment } from 'react-icons/md';
 import useSWR from 'swr';
 import Error from '../components/Error';
 import PaymentCard from '../components/PaymentCard';
@@ -9,6 +9,8 @@ import PageControls from '../components/PageControls';
 import createGetUri from '../utils/createGetUri';
 import { createHandleChange } from '../utils/createHandleChange';
 import Loading from '../components/Loading';
+import { API_URI } from '../utils/constants';
+import download from 'downloadjs';
 
 function paymentsParams(page, adminUsername, userRollNo) {
   const params = [['page', page]];
@@ -75,7 +77,7 @@ export default function Payments() {
   return (
     <VStack spacing={6} w='100%'>
       <Grid
-        gridTemplateColumns={{ base: '1fr', md: '1fr 1fr auto' }}
+        gridTemplateColumns={{ base: '1fr', md: '1fr 1fr auto auto' }}
         gap={2}
         w='100%'
       >
@@ -102,6 +104,22 @@ export default function Payments() {
           icon={<MdSearch fontSize='1.25rem' />}
           colorScheme='green'
           onClick={searchPayments}
+        />
+        <IconButton
+          aria-label='report'
+          icon={<MdAssignment fontSize='1.25rem' />}
+          colorScheme='green'
+          variant='outline'
+          onClick={async () => {
+            try {
+              const uri = `${API_URI}payments/report`;
+              const res = await fetch(uri, { credentials: 'include' });
+              const blob = await res.blob();
+              download(blob, 'payments.csv');
+            } catch (err) {
+              console.error(err);
+            }
+          }}
         />
       </Grid>
       {paymentsList}

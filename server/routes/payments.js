@@ -6,6 +6,10 @@ const Payment = require('../models/payment');
 const User = require('../models/user');
 const { errorLogger } = require('../utils/logger');
 
+const path = require('path');
+const templatesPath = path.join(__dirname, '../templates');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
 router.use(isAuth);
 
 router.get('/', async (req, res) => {
@@ -68,6 +72,44 @@ router.post('/', async (req, res) => {
   } catch (err) {
     res.status(500).send({ data: null, error: true });
     errorLogger.log(err);
+  }
+});
+
+router.get('/report', async (req, res) => {
+  try {
+    const payments = await Payment.find()
+      .select('-_id userRollNo time amount')
+      .sort('userRollNo')
+      .populate({
+        path: 'user',
+        model: 'User',
+        select: '-_id rollNo name phoneNumber email',
+        options: { lean: true },
+      })
+      .exec();
+    // console.log(payments);
+    const resultPath = path.resolve(templatesPath, `payments.csv`);
+    const csvWriter = createCsvWriter({
+      path: resultPath,
+      header: [
+        { id: 'rollNo', title: 'ROLLNO' },
+        { id: 'name', title: 'NAME' },
+        { id: 'amount', title: 'AMOUNT' },
+        { id: 'time', title: 'TIME' },
+        { id: 'phoneNumber', title: 'PHONE' },
+        { id: 'email', title: 'EMAIL' },
+      ],
+    });
+
+    await csvWriter.writeRecords(
+      payments.map(({ amount, user, time }) => ({ amount, time, ...user }))
+    );
+
+    res.download(resultPath);
+  } catch (err) {
+    // console.error(err);
+    res.sendStatus(500);
+    errorLogger.error(err);
   }
 });
 
