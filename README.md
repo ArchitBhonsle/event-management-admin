@@ -3,7 +3,11 @@
 The admin side of an event mangagement system I built for our college fest with
 the MERN stack.
 
-## Pages
+![overview](assets/overview.gif)
+
+<details>
+<summary>Click to see images</summary>
+<br>
 
 ### Login
 
@@ -40,6 +44,8 @@ these payments based on the user's roll number or the username of the admin
 who registered the payement.
 
 ![payments](assets/payments.png)
+
+</details>
 
 ## Web
 
