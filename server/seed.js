@@ -208,7 +208,7 @@ const linkEvents = async () => {
 
           const team = new Team({
             memberRollNos,
-            name: faker.lorem.words(2),
+            teamName: faker.lorem.words(2),
           });
           const savedTeam = await team.save();
 
